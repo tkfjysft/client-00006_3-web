@@ -1,0 +1,36 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import { SITE_INFO } from '@/data/site.ts'; // site.ts をインポート
+import HeroSection from '@/components/common_lower_layer/HeroSection.astro';
+
+
+// 表示したい情報を配列にして定義
+const lawItems = [
+  { label: "販売業者", value: SITE_INFO.title },
+  { label: "運営統括責任者", value: SITE_INFO.ownerFullname },
+  { label: "所在地", value: `〒${SITE_INFO.postCode} ${SITE_INFO.address}` },
+  { label: "電話番号", value: SITE_INFO.tel },
+  // 固定値はここに直接書くか、必要なら site.ts に項目を追加します
+  { label: "販売価格", value: "各メニューページをご参照ください" },
+  { label: "返品・キャンセル", value: "予約確定後のキャンセルは前日までにメールにてご連絡ください。" }
+];
+---
+
+<Layout title="特定商取引法に基づく表記">
+<HeroSection title="特定商取引法に基づく表記" subtitle="" />
+  <div class="wrap">
+  <main class="max-w-4xl mx-auto px-6 pt-10 pb-60">
+    <div class="bg-white/50 backdrop-blur-md border border-white/10 p-6 mb-16 md:p-8 rounded-3xl shadow-2xl">
+    
+    <dl class="space-y-6">
+      {lawItems.map(item => (
+        <div class="border-b border-gray-200 pb-4">
+          <dt class="font-bold text-gray-900 mb-1">{item.label}</dt>
+          <dd class="text-gray-700">{item.value}</dd>
+        </div>
+      ))}
+    </dl>
+  </div>
+  </main>
+</div>
+</Layout>

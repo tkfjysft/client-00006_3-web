@@ -1,0 +1,30 @@
+---
+import introData from './intro.json';
+import SectionContainer from '@/components/common/SectionContainer.astro';
+---
+
+<section class="py-20 bg-clr-wh-1/90">
+	<SectionContainer>
+  <div class="max-w-4xl mx-auto px-6">
+    <!-- 導入見出し -->
+    <h2 class="text-3xl md:text-4xl font-bold text-clr-bl-1 text-center mb-10 leading-tight">
+      {introData.heading}
+    </h2>
+    
+    <!-- リード文 -->
+    <p class="text-lg md:text-xl text-clr-bl-1/80 leading-relaxed mb-16 text-center">
+      {introData.leadText}
+    </p>
+
+    <!-- 特徴グリッド -->
+    <div class="grid md:grid-cols-3 gap-8">
+      {introData.features.map((item) => (
+        <div class="p-6 border border-clr-bl-1/10 rounded-2xl hover:border-clr-main-2 transition-all">
+          <h3 class="text-xl font-semibold text-clr-main-1 mb-4">{item.title}</h3>
+          <p class="text-clr-bl-1/70 leading-relaxed">{item.description}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+	</SectionContainer>
+</section>

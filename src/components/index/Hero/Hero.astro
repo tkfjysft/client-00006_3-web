@@ -1,0 +1,76 @@
+---
+import heroData from './hero.json';
+import { resolveUrl } from '@/utils/pathHelper';
+const { heroTitle, heroSub, heroDescription, buttonText } = heroData;
+const currentUrl = Astro.url.pathname;
+---
+
+
+
+<section class="relative w-full h-screen overflow-hidden">
+  
+  <div class="absolute top-[12%] sm:top-[35%] left-6 md:left-20 z-20 w-[90%] md:w-auto">
+    <div class="flex flex-col items-start space-y-4">
+      <p class="w-fit txt-shadow text-white/90 font-serif tracking-[0.1em] sm:tracking-[0.3em] uppercase text-sm md:text-base font-medium bg-black/20 backdrop-blur-[2px] px-3 py-1 rounded-lg">
+        {heroSub}
+      </p>
+      <h1 class="txt-shadow text-white font-serif text-4xl md:text-5xl lg:text-6xl leading-[1.1]" set:html={heroTitle} /> 
+    </div>
+  </div>
+
+  <div class="absolute bottom-[4%] right-6 md:right-20 z-20 pl-20 md:pl-40 flex flex-col items-end text-left">
+    <div class="txt-shadow text-white/90 text-base md:text-lg leading-relaxed drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]" set:html={heroDescription} />
+    <div class="pt-6">
+      <a href={resolveUrl('/contact', currentUrl)} class="inline-flex items-center bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white border border-white/40 px-10 py-4 rounded-full shadow-lg transition-all hover:-translate-y-1 hover:scale-105 duration-300">
+        <span class="font-semibold tracking-widest">{buttonText}</span>
+      </a>
+    </div>
+  </div>
+
+</section>
+
+
+
+
+<!-- 
+
+<section class="relative w-full h-screen overflow-hidden">
+  
+
+
+  <div class="relative z-10 w-full h-full max-w-[1400px] mx-auto px-6 md:px-20">
+
+
+
+
+  <div class="relative w-full h-full  grid grid-cols-1 md:grid-cols-2 items-center">
+    
+    <div class="flex flex-col justify-center h-full">
+      <div class="space-y-4">
+
+		<p class="w-fit inline-block txt-shadow text-white/90 font-serif tracking-[0.3em] uppercase text-sm md:text-base font-medium bg-black/20 backdrop-blur-[2px] px-3 py-1 rounded-lg">
+          {heroSub}
+        </p>
+
+		<h1 class="txt-shadow mt-4 text-white font-serif text-4xl md:text-6xl lg:text-6xl leading-[1.1]" set:html={heroTitle} /> 
+	 </div>
+    </div>
+
+    <div class="hidden md:flex flex-col justify-end items-end h-full pb-20 space-y-8">
+      <div class="txt-shadow text-white/90 text-lg leading-relaxed max-w-sm text-right drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]" set:html={heroDescription} />
+      
+      <div class="pt-4">
+        <a href="/contact" class="inline-flex items-center bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white border border-white/40 px-10 py-4 rounded-full shadow-lg transition-all hover:-translate-y-1 hover:scale-105 duration-300">
+          <span class="font-semibold tracking-widest">{buttonText}</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="md:hidden flex flex-col items-center pb-12 space-y-8 text-center">
+       <div class="text-white/90 text-base leading-relaxed max-w-sm drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]" set:html={heroDescription} />
+       <a href="/contact" class="bg-white/20 backdrop-blur-sm text-white border border-white/40 px-8 py-3 rounded-full">{buttonText}</a>
+    </div>
+
+  </div>
+  </div>
+</section> -->

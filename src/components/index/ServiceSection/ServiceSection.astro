@@ -1,0 +1,83 @@
+---
+import { getEntry } from 'astro:content';
+import SectionContainer from '@/components/common/SectionContainer.astro';
+import { Clock, Sparkles, CircleCheck } from 'lucide-astro';
+import { Image } from 'astro:assets';
+import leftTopFrame from '@/assets/images/radiance.avif';
+import lineBright from '@/assets/images/line_bright.avif';
+
+import serviceData from './service.json';
+if (!serviceData) throw new Error("service.jsonが見つかりません");
+
+const { title, description, items } = serviceData;
+---
+
+<section id="service" class="section-margin-y py-32 relative overflow-hidden">
+  {/* 背景に淡い光のグラデーションを配置して神秘性を演出 */}
+  <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full opacity-20 pointer-events-none"></div>
+
+  <SectionContainer>
+    <div class="relative mb-20">
+	<Image 
+		src={lineBright} 
+		alt="サブタイトル背景" 
+		width={713} 
+		height={300}
+		class="absolute inset-0 top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 z-[-1] w-[100vw] pointer-events-none mix-blend-screen"
+		aria-hidden="true"
+    />  
+      <h2 class="txt-luster [text-shadow:_0_0_30px_white] text-3xl text-center md:text-6xl font-serif text-clr-main-1 sm:tracking-widest mb-6">
+        {title}
+      </h2>
+
+    </div>
+	<p class="text-clr-bl-1 text-lg max-w-lg mx-auto leading-relaxed bg-white/50 backdrop-blur-md border border-white/10 p-6 mb-16 md:p-8 rounded-3xl shadow-2xl">{description}</p>
+
+
+    <div class="grid lg:grid-cols-3 gap-30 lg:gap-16">
+      {items.map((item) => (
+        <div class="relative group bg-gradient-to-b from-clr-base-1/80 to-clr-base-1/99 border border-clr-wh-1/10 p-10 hover:border-clr-main-1/50 transition-all duration-700 rounded-2xl">
+          
+			<Image 
+				src={leftTopFrame} 
+				alt="あしらい" 
+				width={200} 
+				height={168}
+				class="absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 mix-blend-screen pointer-events-none backface-hidden"
+				style="will-change: transform; transform: translateZ(0);"
+				aria-hidden="true"
+			/>  
+          {/* カード上部の光の演出 */}
+          <div class="absolute inset-0 bg-gradient-to-b from-clr-main-1/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+
+          <div class="relative z-10 flex flex-col h-full">
+            <h3 class="text-2xl font-serif text-clr-main-2 mb-6 border-b border-clr-main-1/20 pb-4">
+              {item.name}
+            </h3>
+            
+            <div class="flex items-center gap-4 text-clr-accent-1 mb-8">
+              <Clock class="w-5 h-5" />
+              <div class="flex flex-col">
+                <span class="text-xl font-bold tracking-wider">{item.time}</span>
+                <span class="text-sm opacity-70 tracking-widest">{item.price}</span>
+              </div>
+            </div>
+            
+            <p class="text-clr-wh-1 text-base leading-relaxed mb-10 flex-grow">
+              {item.description}
+            </p>
+            
+            <ul class="space-y-3">
+              {item.features.map((feature) => (
+                <li class="flex items-center text-clr-wh-1/80 text-sm tracking-wide">
+                  <span class="mr-3 text-clr-main-1">✦</span>
+                  {feature}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      ))}
+    </div>
+  </SectionContainer>
+</section>

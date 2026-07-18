@@ -1,0 +1,53 @@
+---
+import { getEntry } from 'astro:content';
+import SectionContainer from '@/components/common/SectionContainer.astro';
+import { HelpCircle } from 'lucide-astro';
+import { Image } from 'astro:assets';
+import lineBright from '@/assets/images/line_bright.avif';
+
+import data from './faq.json';
+if (!data) throw new Error("faq.jsonが見つかりません");
+
+const { title, questions } = data;
+---
+
+<section id="faq" class="section-margin-y py-24 md:py-32 text-clr-wh-1">
+  <SectionContainer>
+    <div class="relative mb-20 isolation-isolate">
+	<Image 
+		src={lineBright} 
+		alt="サブタイトル背景" 
+		width={713} 
+		height={300}
+		class="absolute inset-0 top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 z-[-1] w-[100vw] pointer-events-none mix-blend-screen"
+		aria-hidden="true"
+    />  
+      <h2 class="txt-luster [text-shadow:_0_0_30px_white] text-3xl text-center md:text-6xl font-serif text-clr-main-1 sm:tracking-widest mb-6">
+        {title}
+      </h2>
+
+    </div>
+    
+    <div class="max-w-3xl mx-auto space-y-6">
+      {questions.map((item) => (
+        <details class="relative group bg-gradient-to-b from-clr-base-1/80 to-clr-base-1/99 border border-clr-wh-1/10 p-10 hover:border-clr-main-1/50 transition-all duration-700 rounded-2xl">
+
+
+
+          <summary class="text-lg md:text-xl font-serif text-clr-main-2 cursor-pointer flex justify-between items-center list-none outline-none">
+            <span class="flex items-center gap-4">
+              <HelpCircle class="w-6 h-6 flex-shrink-0 text-clr-accent-1" />
+              {item.q}
+            </span>
+            <span class="text-clr-wh-1 group-open:rotate-180 transition-transform duration-300 ml-4">
+              ▼
+            </span>
+          </summary>
+          <p class="text-base md:text-lg text-clr-wh-1/90 mt-6 leading-relaxed pt-6 border-t border-clr-main-1/20">
+            {item.a}
+          </p>
+        </details>
+      ))}
+    </div>
+  </SectionContainer>
+</section>

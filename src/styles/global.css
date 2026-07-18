@@ -1,0 +1,128 @@
+@import "tailwindcss";
+
+:root {
+  /* ここに共通変数を置く */
+  --clr-base-1: #0f172a;
+  --clr-main-1: #2b4686;
+  --clr-main-2: #aac3fd;
+  --clr-accent-1: #e3d85c;
+  --clr-bl-1: #303c4f;
+  --clr-wh-1: #f8fafc;
+}
+
+
+
+
+@theme {
+  --color-clr-base-1: var(--clr-base-1);
+  --color-clr-main-1: var(--clr-main-1);
+  --color-clr-main-2: var(--clr-main-2);
+  --color-clr-accent-1: var(--clr-accent-1);
+  --color-clr-bl-1: var(--clr-bl-1);
+  --color-clr-wh-1: var(--clr-wh-1);
+  
+  --font-sans: "Noto Sans JP", sans-serif;
+  --font-serif: "Noto Serif JP", serif;
+}
+
+@layer base {
+  body {
+    @apply text-clr-bl-1 font-sans font-light leading-relaxed;
+  }
+  h1, h2, h3 {
+    @apply font-serif font-light text-clr-main-1;
+  }
+}
+
+body {
+  @apply text-clr-bl-1 font-sans font-light leading-relaxed overflow-x-hidden;
+}
+
+
+
+
+
+.bg-fixed-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1; /* コンテンツの背面に配置 */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+
+
+
+
+
+/* 1. 画面が「横長」の場合：PC用画像 (bg_pc.avif) を適用 */
+@media (orientation: landscape) {
+  .bg-fixed-container {
+    background-image: url('@/assets/images/bg_pc.avif');
+  }
+}
+
+/* 2. 画面が「縦長」の場合：スマホ用画像 (bg_sm.avif) を適用 */
+@media (orientation: portrait) {
+  .bg-fixed-container {
+    background-image: url('@/assets/images/bg_sm.avif');
+	opacity: 0.8;
+  }
+}
+
+
+
+
+
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.wrap {
+	background: linear-gradient(
+        to bottom,
+        transparent 0%,     /* 上端：透明 */
+        #ffffff88 4%,      /* ぼかし開始位置：半透明白 */
+        #ffffff88 100%     /* ぼかし終了位置：半透明白 */
+    );
+}
+
+.txt-shadow {
+  text-shadow: 0 0 4px rgba(0,0,0,0.5), 0 0 6px rgba(0,0,0,1), 0 0 12px rgba(0,0,0,1), 0 0 18px rgba(0,0,0,1);
+}
+.txt-luster {
+text-shadow: 
+    0 0 1px #fff, 
+    0 0 2px #fff, 
+    0 0 4px #fff, 
+    0 0 8px #fff, 
+    0 0 50px rgba(255, 255, 255);
+}
+
+.section-margin-y {
+	margin: 720px auto 0 auto;
+}
+
+
+
+
+
+
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 1.2s ease-in-out forwards;
+}

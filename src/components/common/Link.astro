@@ -1,0 +1,21 @@
+---
+// src/components/Link.astro
+interface Props {
+  href: string;
+  external?: boolean; // 新しい属性を追加
+  [key: string]: any; // 他の属性（classなど）を許可
+}
+
+const { href, external, ...props } = Astro.props;
+const baseUrl = import.meta.env.BASE_URL;
+
+// リンク先が '/' から始まっていればベースパスを付与
+const resolvedHref = href.startsWith('/') ? `${baseUrl}${href.slice(1)}` : href;
+
+// externalがtrueなら target="_blank" と rel="noopener noreferrer" を付与
+const targetProps = external ? { target: "_blank", rel: "noopener noreferrer" } : {};
+---
+
+<a href={resolvedHref} {...targetProps} {...props}>
+  <slot />
+</a>

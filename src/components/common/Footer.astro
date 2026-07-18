@@ -1,0 +1,103 @@
+---
+import { getEntry } from 'astro:content';
+import { Image } from 'astro:assets';
+import Link from '@/components/common/Link.astro';
+import SectionContainer from '@/components/common/SectionContainer.astro';
+import { SITE_INFO } from '@/data/site';
+import { FOOTER_DATA } from '@/data/site';
+import { SNS_DATA } from '@/data/site';
+import * as Lucide from 'lucide-astro';
+import pht_footer from '@assets/images/pht_footer.avif';
+import { resolveUrl } from '@/utils/pathHelper';
+
+const getIcon = (name: string) => {
+  return Lucide[name as keyof typeof Lucide];
+};	
+const currentUrl = Astro.url.pathname;
+
+// JSONからデータを抽出
+const links = FOOTER_DATA.links || [];
+const sublinks = FOOTER_DATA.sublinks || [];
+const snslinks = SNS_DATA || [];
+
+// OWNER_NAME を埋め込む処理
+const copyright = FOOTER_DATA.copyright.replace('{NAME}', SITE_INFO.title);
+---
+
+<footer class="relative py-30 bg-clr-wh-1">
+
+	<div class="absolute inset-0 flex justify-center pointer-events-none p-10">
+    <div class="relative w-[400px] h-full">
+      <Image 
+          src={pht_footer} 
+          alt="チャネリングイメージ" 
+          width={400} 
+          height={400}
+          class="absolute top-40 md:top-15 left-0 opacity-25 w-[400px] h-auto"
+          aria-hidden="true"
+      />
+    </div>
+  </div>
+
+  <SectionContainer>
+    <div class="grid md:grid-cols-[1fr_1fr] gap-16 mb-16">
+      
+      <div class="space-y-8">
+        <h2 class="text-3xl font-serif text-clr-bl-1 font-bold">{SITE_INFO.title}</h2>
+        <div class="space-y-3 text-base text-clr-bl-1 leading-relaxed">
+          <p>〒{SITE_INFO.postCode}<br />{SITE_INFO.address}</p>
+          <p>電話番号：{SITE_INFO.tel}</p>
+          <p>FAX：{SITE_INFO.fax}</p>
+          <!-- <p>代表者：{SITE_INFO.ownerFullname}</p> -->
+        </div>
+
+      </div>
+
+		<div class="pt-10 border-t border-clr-main-1/20 space-y-8">
+
+		<div class="flex flex-wrap justify-end gap-6 pt-4">
+			<div class="flex items-center gap-8">
+
+
+
+      {snslinks.map((item) => {
+          const Icon = getIcon(item.icon);
+          return (
+            <Link href={item.url} external>
+              {/* {Icon && <Icon class="w-4 h-4 text-clr-accent-1" />} */}
+              <i class={`${item.icon} text-2xl text-clr-bl-1/40`}></i>
+            </Link>
+          );
+        })}
+
+
+
+
+			</div>
+			</div>
+		
+		<div>
+		<ul class="flex flex-wrap justify-end gap-6 list-none p-0 m-0">
+			{sublinks.map((link) => (
+			<li>
+				<Link href={resolveUrl(link.url, currentUrl)} class="text-base text-clr-bl-1/60 text-clr-bl-1 hover:text-clr-bl-1/50 transition-colors">
+				{link.name}
+				</Link>
+			</li>
+			))}
+		</ul>
+		</div>
+		</div>
+
+    </div>
+
+
+    <div class="pt-10 border-t border-clr-main-1/20 space-y-8">
+      <div>
+      <p class="flex flex-wrap justify-center text-sm text-clr-bl-1/80">
+        {copyright}
+      </p>
+      </div>
+    </div>
+  </SectionContainer>
+</footer>

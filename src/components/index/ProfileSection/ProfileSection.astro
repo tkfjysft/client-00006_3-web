@@ -1,0 +1,67 @@
+---
+import { getEntry } from 'astro:content';
+import profileImage from '@/assets/images/owner/face_owner.avif';
+import SectionContainer from '@/components/common/SectionContainer.astro';
+import { SITE_INFO } from '@data/site';
+import { Image } from 'astro:assets';
+import lineBright from '@/assets/images/line_bright.avif';
+
+import data from './profile.json';
+if (!data) throw new Error("profile.jsonが見つかりません");
+
+const { title, text, tags } = data;
+---
+
+<section id="profile" class="section-margin-y py-24 md:py-32 text-clr-wh-1">
+  <SectionContainer>
+    <div class="relative mb-20">
+	<Image 
+		src={lineBright} 
+		alt="サブタイトル背景" 
+		width={713} 
+		height={300}
+		class="absolute inset-0 top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 z-[-1] w-[100vw] pointer-events-none mix-blend-screen"
+		aria-hidden="true"
+    />  
+      <h2 class="txt-luster [text-shadow:_0_0_30px_white] text-3xl text-center md:text-6xl font-serif text-clr-main-1 sm:tracking-widest mb-6">
+        {title}
+      </h2>
+
+    </div>
+
+    
+    <div class="flex flex-col md:flex-row items-start gap-16 max-w-5xl mx-auto">
+      
+      {/* 写真エリア：角を活かした重厚なスタイル */}
+      <div class="relative flex-shrink-0 mx-auto md:mx-0">
+        <Image 
+          src={profileImage} 
+          alt={SITE_INFO.ownerName} 
+          class="shadow-2xl w-[280px] md:w-[320px] aspect-[4/5] object-cover brightness-90 border border-clr-main-1/20" 
+        />
+      </div>
+      
+      {/* 紹介テキストエリア */}
+      <div class="space-y-10 text-clr-bl-1 text-lg mx-auto leading-relaxed bg-white/50 backdrop-blur-md border border-white/10 p-6 mb-16 md:p-8 rounded-3xl shadow-2xl">
+        <div>
+          <p class="text-base tracking-[0.2em] text-clr-main-1/70 uppercase mb-4">name</p>
+          <h3 class="text-3xl md:text-4xl font-serif text-clr-bl-1">{SITE_INFO.ownerName}</h3>
+        </div>
+        
+        <p class="text-base md:text-lg text-clr-bl-1/90 leading-relaxed whitespace-pre-line">
+          {text}
+        </p>
+
+        {/* タグエリア：四角形の枠で統一 */}
+		<div class="flex flex-wrap gap-3 pt-4">
+          {tags.map((tag) => (
+            <span class="px-4 py-1.5 rounded-full bg-clr-main-1/5 border border-clr-main-1/20 text-clr-main-1 text-sm font-medium transition-all hover:bg-clr-main-1/10 hover:border-clr-main-1/40 cursor-default">
+              #{tag}
+            </span>
+          ))}
+        </div>
+
+	</div>
+    </div>
+  </SectionContainer>
+</section>

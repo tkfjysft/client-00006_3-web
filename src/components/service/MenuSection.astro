@@ -1,0 +1,43 @@
+---
+import menuData from './menu.json';
+import SectionContainer from '@/components/common/SectionContainer.astro';
+---
+
+<section class="py-20 bg-clr-wh-1/70">
+  <SectionContainer>
+  <div class="max-w-5xl mx-auto px-6">
+    <h2 class="txt-luster text-3xl md:text-4xl font-bold text-center mb-6">{menuData.heading}</h2>
+    <p class="txt-luster text-center text-clr-bl-1 mb-16 max-w-2xl mx-auto">{menuData.description}</p>
+
+    <div class="grid md:grid-cols-1 gap-8">
+      {menuData.items.map((item) => (
+        <article class="border border-clr-bl-1/5 rounded-2xl p-8 hover:shadow-lg transition-shadow bg-clr-wh-1/90 flex flex-col">
+          <h3 class="text-xl font-bold mb-2">{item.name}</h3>
+          <div class="flex justify-between items-center mb-4 text-sm text-clr-bl-1">
+            <span>{item.time}</span>
+            <span class="font-bold text-lg text-clr-main-1">{item.price}</span>
+          </div>
+
+<!-- 親要素：デフォルトで縦積み、md(768px)以上で横並び -->
+<div class="flex flex-col md:flex-row gap-8">
+  
+  <!-- 説明文エリア：横幅の6割（必要に応じて調整してください） -->
+  <p class="text-clr-bl-1 md:w-3/5">
+    {item.description}
+  </p>
+  
+  <!-- リストエリア：横幅の4割、上のborderは横並び時のみ左borderにする -->
+  <ul class="space-y-2 border-t border-clr-bl-1/50 md:border-t-0 md:border-l pt-4 md:pt-0 md:pl-6">
+    {item.features.map((feature) => (
+      <li class="text-sm text-clr-main-1 flex items-center">
+        <span class="mr-2">✨</span> {feature}
+      </li>
+    ))}
+  </ul>
+</div>
+        </article>
+      ))}
+    </div>
+  </div>
+  </SectionContainer>
+</section>

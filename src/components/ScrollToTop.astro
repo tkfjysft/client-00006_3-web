@@ -1,0 +1,36 @@
+---
+// 必要に応じてアイコンSVGなどを配置
+---
+
+<button
+  id="scrollToTop"
+  aria-label="ページ最上部へ戻る"
+  class="fixed bottom-8 right-8 z-50 p-4 bg-clr-main-1/40 backdrop-blur-md border border-white/30 rounded-full shadow-lg transition-all duration-300 opacity-0 translate-y-10 hover:bg-white/30 hover:scale-110 cursor-pointer"
+>
+  <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+  </svg>
+</button>
+
+<script>
+  const btn = document.getElementById('scrollToTop');
+
+  // スクロール位置に応じてボタンを表示/非表示
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 300) {
+      btn.classList.remove('opacity-0', 'translate-y-10');
+      btn.classList.add('opacity-100', 'translate-y-0');
+    } else {
+      btn.classList.add('opacity-0', 'translate-y-10');
+      btn.classList.remove('opacity-100', 'translate-y-0');
+    }
+  });
+
+  // クリックで最上部へスムーズスクロール
+  btn.addEventListener('click', () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  });
+</script>

@@ -1,0 +1,24 @@
+---
+interface Props {
+  title: string;
+  subtitle: string;
+}
+
+const { title, subtitle } = Astro.props;
+---
+
+<!-- 
+  bg-clr-base-1: 背景色として適用
+-->
+<section class="relative bg-clr-base-1/60 pb-24 pt-40 sm:pt-44">
+  
+  <!-- コンテンツエリア -->
+  <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <h1 class="text-4xl md:text-5xl font-extrabold text-clr-wh-1 tracking-tight">
+      {title}
+    </h1>
+    <p class="mt-6 text-xl text-clr-wh-1/80 max-w-3xl mx-auto leading-relaxed">
+      {subtitle}
+    </p>
+  </div>
+</section>
