@@ -16,7 +16,6 @@ const { blog_id } = Astro.params;
 // ③ microCMSから該当する記事のデータを取得
 const post = await getBlogDetail(blog_id);
 ---
-
 <html lang="ja">
   <head>
     <meta charset="utf-8" />
