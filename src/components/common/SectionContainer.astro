@@ -1,12 +1,12 @@
 ---
 // src/components/SectionContainer.astro
-const { class: className = "" } = Astro.props;
+const { class: className = "", py = "py-20" } = Astro.props;
 ---
 {/* 
   px-6: スマホ時の余白
   md:px-12: PC時の余白
   max-w-[1440px] mx-auto: 全体幅の制限と中央寄せ
 */}
-<div class={`w-full max-w-[1440px] mx-auto px-6 md:px-12 ${className}`}>
+<div class={`w-full max-w-[1440px] mx-auto px-6 md:px-12 ${py} ${className}`}>
   <slot />
 </div>

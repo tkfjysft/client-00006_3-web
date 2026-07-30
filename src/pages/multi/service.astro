@@ -3,6 +3,7 @@
 import HeroSection from '@/components/common_lower_layer/HeroSection.astro';
 import IntroSection from '@/components/service/IntroSection.astro';
 import MenuSection from '@/components/service/MenuSection.astro';
+import FlowSection from '@/components/service/FlowSection.astro';
 import Layout from '@/layouts/Layout.astro';
 import heroData from '@/components/service/hero.json';
 ---
@@ -10,4 +11,5 @@ import heroData from '@/components/service/hero.json';
   <HeroSection title={heroData.title} subtitle={heroData.subtitle} />
   <IntroSection />
   <MenuSection />
+  <FlowSection />
 </Layout>

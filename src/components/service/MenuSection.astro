@@ -1,6 +1,8 @@
 ---
 import menuData from './menu.json';
 import SectionContainer from '@/components/common/SectionContainer.astro';
+import { Image } from 'astro:assets';
+import leftTopFrame from '@/assets/images/radiance.avif';
 ---
 
 <section class="py-20 bg-clr-wh-1/70">
@@ -11,7 +13,19 @@ import SectionContainer from '@/components/common/SectionContainer.astro';
 
     <div class="grid md:grid-cols-1 gap-8">
       {menuData.items.map((item) => (
-        <article class="border border-clr-bl-1/5 rounded-2xl p-8 hover:shadow-lg transition-shadow bg-clr-wh-1/90 flex flex-col">
+        <article class="relative border-l-6 border-clr-main-1/90 rounded-2xl p-8 hover:shadow-lg transition-shadow bg-clr-wh-1/90 flex flex-col">
+
+			<Image 
+				src={leftTopFrame} 
+				alt="あしらい" 
+				width={200} 
+				height={168}
+				class="absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 mix-blend-screen pointer-events-none backface-hidden"
+				style="will-change: transform; transform: translateZ(0);"
+				aria-hidden="true"
+			/>  
+
+
           <h3 class="text-xl font-bold mb-2">{item.name}</h3>
           <div class="flex justify-between items-center mb-4 text-sm text-clr-bl-1">
             <span>{item.time}</span>

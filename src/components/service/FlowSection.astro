@@ -1,0 +1,73 @@
+---
+import flowData from './flowSection.json';
+import SectionContainer from '@/components/common/SectionContainer.astro';
+import { Image } from 'astro:assets';
+import leftTopFrame from '@/assets/images/radiance.avif';
+---
+
+<section class="py-20 bg-clr-wh-1/70 bg-clr-wh-1/78">
+  <SectionContainer>
+    <div class="max-w-5xl mx-auto px-6">
+      <!-- 見出しセクション -->
+      <h2 class="text-3xl md:text-4xl font-bold text-center mb-6 text-clr-base-1">{flowData.sectionTitle}</h2>
+      <p class="text-center text-clr-bl-1 mb-16 max-w-2xl mx-auto text-base leading-relaxed">{flowData.sectionSubTitle}</p>
+
+      <!-- ステップ一覧 -->
+      <div class="flex flex-col gap-8">
+        {flowData.steps.map((stepItem, index) => (
+          <>
+            <article class="relative border-1 border-clr-main-1/30 rounded-2xl p-8 shadow-md hover:shadow-lg transition-shadow bg-clr-wh-1/90 flex flex-col">
+
+              <!-- ステップ番号 ＆ タイトル -->
+              <div class="flex items-center gap-4 mb-4">
+                <span class="text-lg font-bold text-clr-wh-1 bg-clr-main-1 px-4 py-1 rounded-full">{stepItem.step}</span>
+                <h3 class="text-xl md:text-2xl font-bold text-clr-base-1">{stepItem.name}</h3>
+              </div>
+
+              <!-- メインコンテンツ領域（左右または上下レイアウト） -->
+              <div class="flex flex-col md:flex-row gap-8 mt-2">
+                
+                <!-- 説明文エリア：左側 -->
+                <div class="md:w-3/5 flex flex-col justify-between">
+                  <p class="text-clr-bl-1 text-base leading-relaxed mb-4">
+                    {stepItem.description}
+                  </p>
+                  {stepItem.note && (
+                    <p class="text-clr-main-1 text-base font-medium bg-clr-main-2/20 p-3 rounded-lg">
+                      {stepItem.note}
+                    </p>
+                  )}
+                </div>
+                
+                <!-- 詳細リストエリア：右側 -->
+                <div class="md:w-2/5 border-t border-clr-bl-1/30 md:border-t-0 md:border-l pt-4 md:pt-0 md:pl-6 flex flex-col justify-center">
+                  <ul class="space-y-3">
+                    {stepItem.details.map((detail) => (
+                      <li class="text-base text-clr-bl-1 flex items-start">
+                        <span class="mr-2 text-clr-main-1 shrink-0">✨</span>
+                        <span>{detail}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+              </div>
+
+            </article>
+
+            <!-- ステップ間の下向き矢印（アニメーションなし） -->
+            {index < flowData.steps.length - 1 && (
+              <div class="flex justify-center items-center py-2">
+                <div class="w-10 h-10 rounded-full bg-clr-main-2/20 flex items-center justify-center shadow-sm">
+                  <svg class="w-5 h-5 text-clr-main-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                  </svg>
+                </div>
+              </div>
+            )}
+          </>
+        ))}
+      </div>
+    </div>
+  </SectionContainer>
+</section>
