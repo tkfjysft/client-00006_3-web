@@ -10,7 +10,7 @@ import { resolveUrl } from '@/utils/pathHelper';
 
 const currentUrl = Astro.url.pathname;
 
-const response = await getBlogs({ fields: ["id", "title", "publishedAt"] });
+const response = await getBlogs({ fields: ["id", "title", "publishedAt", "slug"] });
 const posts = response.contents;
 ---
 
@@ -22,13 +22,15 @@ const posts = response.contents;
 
         <!-- 記事リスト（カード形式） -->
         <ul class="space-y-10">
-          {
-            posts.map((post) => (
-              <li>
-                <a 
-                  href={resolveUrl(`/blog/${post.id}/`, currentUrl)}
-                  class="block rounded-2xl p-6 md:p-8 bg-gradient-to-b from-clr-wh-1/85 via-clr-wh-1/70 to-clr-wh-1/20 border border-clr-main-1/40 hover:border-clr-accent/60 transition-all duration-300 shadow-lg group"
-                >
+{
+  posts.map((post) => {
+    // slugがあればslugを優先、なければ従来のidを使う
+    const postSlug = post.slug || post.id;
+
+    return (
+		<li>
+			<a href={resolveUrl(`/blog/${postSlug}/`, currentUrl)} class="block rounded-2xl p-6 md:p-8 bg-gradient-to-b from-clr-wh-1/85 via-clr-wh-1/70 to-clr-wh-1/20 border border-clr-main-1/40 hover:border-clr-accent/60 transition-all duration-300 shadow-lg group">
+				  
                   <article class="flex flex-col md:flex-row md:items-center md:justify-between gap-8">
 					<div class="txt-luster flex items-center gap-2 text-base font-bold text-clr-main-1 shrink-0">
                       <time datetime={post.publishedAt}>
@@ -50,11 +52,12 @@ const posts = response.contents;
                       <span class="txt-luster transform group-hover:translate-x-1 transition-transform duration-200">→</span>
                     </div>
                   </article>
-                </a>
-              </li>
-            ))
-          }
-        </ul>
+				</a>
+			</li>
+				);
+			})
+			}   
+     </ul>
 
       </div>
     </SectionContainer>

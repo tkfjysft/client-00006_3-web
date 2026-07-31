@@ -1,5 +1,5 @@
 ---
-import { getBlogs, getBlogDetail } from "@/lib/microcms.ts";
+import { getBlogs } from "@/lib/microcms.ts"; // getBlogDetailは不要になるので外してもOKです
 import { resolveUrl } from '@/utils/pathHelper';
 import Layout from '@/layouts/Layout.astro';
 import SectionContainer from '@/components/common/SectionContainer.astro';
@@ -7,21 +7,29 @@ import HeroSection from '@/components/common_lower_layer/HeroSection.astro';
 
 const currentUrl = Astro.url.pathname;
 
-
 // ① ビルド時に「どの記事ページを作るべきか」をAstroに教える関数
 export async function getStaticPaths() {
-  const response = await getBlogs({ fields: ["id"] });
+  const response = await getBlogs({ fields: ["id", "slug"] });
   
   return response.contents.map((post) => ({
-    params: { blog_id: post.id },
+    params: { blog_id: post.slug || post.id },
   }));
 }
 
-// ② URLから blog_id を受け取る
+// ② URLから blog_id （または slug）を受け取る
 const { blog_id } = Astro.params;
 
-// ③ microCMSから該当する記事のデータを取得
-const post = await getBlogDetail(blog_id);
+// ③ microCMSから slug または id のどちらかに一致する記事データを取得する
+const response = await getBlogs({
+  filters: `slug[equals]${blog_id}[or]id[equals]${blog_id}`,
+  limit: 1,
+});
+const post = response.contents[0];
+
+// 万が一記事が見つからない場合の安全策
+if (!post) {
+  return Astro.redirect('/404');
+}
 
 const safeContent = post.content
   ? post.content.replace(/<h1(\s|>)/gi, '<h2$1').replace(/<\/h1>/gi, '</h2>')
@@ -30,7 +38,7 @@ const safeContent = post.content
 <Layout title={post.title}>
 	<HeroSection title={post.title} subtitle="ブログ" txtSizeName="text-xl md:text-2xl" />
 	<div class="wrap ">
-<section class="py-20 bg-gradient-to-b from-clr-wh-1/70 via-clr-wh-1/60 to-clr-wh-1/40 text-clr-wh-1 min-h-screen">
+<section class="py-20 bg-gradient-to-b from-clr-wh-1/60 via-clr-wh-1/40 to-clr-wh-1/10 text-clr-wh-1 min-h-screen">
     <SectionContainer>
         
         <!-- 一覧に戻るリンク -->
@@ -62,7 +70,7 @@ const safeContent = post.content
 
         <!-- アイキャッチ画像 -->
         {post.eyecatch && (
-          <div class="mb-12 rounded-3xl overflow-hidden border border-clr-main-1/10 shadow-xl bg-clr-base-1/80">
+          <div class="mb-12 rounded-3xl overflow-hidden shadow-xl bg-clr-base-1/80">
             <img 
               src={post.eyecatch.url} 
               alt="" 
@@ -72,7 +80,7 @@ const safeContent = post.content
         )}
 
         <!-- 本文エリア（microCMSのリッチエディタ出力） -->
-        <div class="post-content text-base md:text-lg text-clr-wh-1/90 leading-relaxed space-y-6">
+        <div class="bg-clr-wh-1/50 py-4 px-6 rounded-3xl shadow-xl post-content text-base md:text-lg text-clr-wh-1/90 leading-relaxed space-y-6">
           <div class="blog-content txt-luster" set:html={safeContent} />
         </div>
 
