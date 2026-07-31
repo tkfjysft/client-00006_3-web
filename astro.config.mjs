@@ -4,7 +4,7 @@ import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   outDir: './dist',
-  // すべてのアセット参照を相対パス（./）にする
+  // ★ここを追加：アセットやリンクの参照をすべて相対パスにする
   base: './',
   vite: {
     plugins: [tailwindcss()]
