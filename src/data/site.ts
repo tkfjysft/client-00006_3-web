@@ -53,12 +53,12 @@ export const SITE_INFO = {
 
 const BASE_NAV_ITEMS = [
   { text: 'トップ', icon: 'Sun', singleUrl: '/', multiUrl: '/' },
-  { text: 'セッション', icon: 'Sparkles', singleUrl: '#service', multiUrl: '/service' },
-  { text: 'お客様の声', icon: 'MessageCircle', singleUrl: '#voice', multiUrl: '/voice' },
-  { text: 'よくあるご質問', icon: 'HelpCircle', singleUrl: '#faq', multiUrl: '/faq' },
-  { text: 'プロフィール', icon: 'User', singleUrl: '#profile', multiUrl: '/profile' },
+  { text: 'セッション', icon: 'Sparkles', singleUrl: '/#service', multiUrl: '/service' },
+  { text: 'お客様の声', icon: 'MessageCircle', singleUrl: '/#voice', multiUrl: '/voice' },
+  { text: 'よくあるご質問', icon: 'HelpCircle', singleUrl: '/#faq', multiUrl: '/faq' },
+  { text: 'プロフィール', icon: 'User', singleUrl: '/#profile', multiUrl: '/profile' },
   { text: 'ブログ', icon: 'User', singleUrl: '/blog', multiUrl: '/blog' },
-  { text: 'ご予約/お問い合わせ', icon: 'Mail', singleUrl: '/contact', multiUrl: '/contact' }, // ※タイポの修正も含めて統一できます
+  { text: 'ご予約/お問い合わせ', icon: 'Mail', singleUrl: '/contact', multiUrl: '/contact' },
 ];
 
 // 2. mapを使って single と multi を自動生成
