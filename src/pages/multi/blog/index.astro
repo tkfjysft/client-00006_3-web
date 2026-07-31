@@ -10,7 +10,7 @@ import { resolveUrl } from '@/utils/pathHelper';
 
 const currentUrl = Astro.url.pathname;
 
-const response = await getBlogs({ fields: ["id", "title", "publishedAt", "slug"] });
+const response = await getBlogs({ fields: ["id", "title", "publishedAt", "slug", "category"] });
 const posts = response.contents;
 ---
 
@@ -29,9 +29,26 @@ const posts = response.contents;
 
     return (
 		<li>
-			<a href={resolveUrl(`/blog/${postSlug}/`, currentUrl)} class="block rounded-2xl p-6 md:p-8 bg-gradient-to-b from-clr-wh-1/85 via-clr-wh-1/70 to-clr-wh-1/20 border border-clr-main-1/40 hover:border-clr-accent/60 transition-all duration-300 shadow-lg group">
+
 				  
-                  <article class="flex flex-col md:flex-row md:items-center md:justify-between gap-8">
+                  <article class="flex flex-col md:flex-row md:items-center md:justify-between gap-8 rounded-2xl p-6 md:p-8 bg-gradient-to-b from-clr-wh-1/85 via-clr-wh-1/70 to-clr-wh-1/20 border border-clr-main-1/40 hover:border-clr-accent/60 transition-all duration-300 shadow-lg group">
+
+				  <div>
+					{/* --- ここからカテゴリバッジを追加 --- */}
+      {post.category && (
+        <div class="mb-2">
+          <a 
+            href={`/multi/blog/category/${post.category.slug}/`}
+            class=" px-2.5 py-0.5 bg-clr-main-1/10 text-clr-main-1 text-xs rounded-md font-bold hover:bg-clr-main-1/20 transition-colors"
+          >
+            {post.category.name}
+          </a>
+        </div>
+      )}
+      {/* --- ここまで --- */}
+
+	  
+
 					<div class="txt-luster flex items-center gap-2 text-base font-bold text-clr-main-1 shrink-0">
                       <time datetime={post.publishedAt}>
                         {new Date(post.publishedAt).toLocaleDateString('ja-JP', {
@@ -41,18 +58,21 @@ const posts = response.contents;
                         })}
                       </time>
                     </div>
+				  </div>
+
+	  			<a href={resolveUrl(`/blog/${postSlug}/`, currentUrl)} >
 
                     <div class="space-y-2">
                       <h2 class="txt-luster text-lg md:text-xl font-serif font-bold text-clr-bl-1 group-hover:text-clr-main-1/70 transition-colors duration-200">
                         {post.title}
                       </h2>
                     </div>
-                    
+                    									</a>
+
                     <div class="flex justify-end items-center gap-2 text-2xl font-bold text-clr-main-1 shrink-0">
                       <span class="txt-luster transform group-hover:translate-x-1 transition-transform duration-200">→</span>
                     </div>
                   </article>
-				</a>
 			</li>
 				);
 			})
