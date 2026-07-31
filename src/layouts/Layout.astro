@@ -70,6 +70,8 @@ const jsonLd = {
 <!-- パンくずリスト構造化データ -->
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 
+
+
 </head>
   <body class="min-h-screen animate-fade-in">
     <Header />
@@ -130,5 +132,56 @@ const jsonLd = {
         menu?.classList.toggle('hidden');
       });
     </script>
+		<!-- ページ内リンク時の#idの付与をとめる -->
+<script is:inline>
+  document.addEventListener('click', function(e) {
+    var link = e.target.closest('a');
+    if (!link) return;
+
+    var href = link.getAttribute('href');
+    if (!href) return;
+
+    // パスの中に「#」が含まれているかチェック
+    var hashIndex = href.indexOf('#');
+    if (hashIndex !== -1) {
+      // #以降の文字列（例: #service）を取り出す
+      var hash = href.substring(hashIndex);
+      if (hash === '#' || hash === '') return;
+
+      // 該当するIDを持つ要素が今のページ内に存在するか確認する
+      var target = document.querySelector(hash);
+      if (target) {
+        // ページ内にその要素がある場合のみ、デフォルトのジャンプを止めてスムーズスクロールさせる
+        e.preventDefault();
+        console.log('スムーズスクロール実行:', hash);
+        
+        target.scrollIntoView({ behavior: 'smooth' });
+      }
+      // ※ページ内に要素がない場合（別のページへのアンカー等の場合）は、
+      // preventDefault()を呼ばないので、通常の画面遷移としてそのままスルーされます！
+    }
+  });
+</script>
+<script is:inline>
+  window.addEventListener('DOMContentLoaded', function() {
+    // もしURLに # が含まれている状態でページが開かれた場合
+    if (window.location.hash) {
+      var hash = window.location.hash;
+      var target = document.querySelector(hash);
+
+      if (target) {
+        // 1. ブラウザのデフォルトの強制ジャンプを相殺して、一度一番上にスクロール（または位置を保持）させる等、
+        // 必要に応じて調整しますが、基本的にはブラウザにスクロールさせます。
+        
+        // 2. ほんの少しだけ遅延させて（描画が落ち着いてから）、URLからハッシュを綺麗に消す
+        setTimeout(function() {
+          // history.replaceState を使って、URLを綺麗にする（/#service を / に書き換える）
+          var cleanUrl = window.location.pathname + window.location.search;
+          window.history.replaceState(null, document.title, cleanUrl);
+        }, 50); // 50ミリ秒〜100ミリ秒ほど遅らせるとチラつきや位置ズレを防ぎやすいです
+      }
+    }
+  });
+</script>
   </body>
 </html>
