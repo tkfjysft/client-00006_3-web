@@ -9,5 +9,9 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()]
   },
+  build: {
+    // デモ側のアセット出力フォルダ名を「_demo-assets」に変更する
+    assets: '_demo-assets',
+  },
   output: 'static',
 });
