@@ -1,5 +1,5 @@
 ---
-import { NAV_ITEMS, SITE_INFO } from '@data/site';
+import { NAV_ITEMS, SITE_INFO, PLANS } from '@data/site';
 import * as Lucide from 'lucide-astro';
 import Link from '@/components/common/Link.astro';
 import SectionContainer from '@/components/common/SectionContainer.astro';
@@ -10,8 +10,14 @@ const getIcon = (name: string) => {
 };
 const currentUrl = Astro.url.pathname;
 
-const isMulti = currentUrl.startsWith('/multi');
-const navItems = isMulti ? NAV_ITEMS.multi : NAV_ITEMS.single;
+const segments = Astro.url.pathname.split('/');
+const currentPlan = segments[1];
+
+// 3つのプランに応じてナビゲーションを切り替え
+const navItems = 
+  currentPlan === PLANS.PREMIUM ? NAV_ITEMS.premium :
+  currentPlan === PLANS.MULTI ? NAV_ITEMS.multi : 
+  NAV_ITEMS.single; // デフォルト（demo-a）
 ---
 
 <header class="fixed w-full h-16 sm:h-20 z-50 bg-clr-wh-1/30">

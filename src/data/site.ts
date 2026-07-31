@@ -73,6 +73,11 @@ export const NAV_ITEMS = {
     url: item.multiUrl,
     icon: item.icon,
   })),
+  premium: BASE_NAV_ITEMS.map(item => ({
+    text: item.text,
+    url: item.multiUrl,
+    icon: item.icon,
+  })),
 };
 
 //パンくずリストのための
@@ -110,7 +115,7 @@ export const SNS_DATA = [
 
 // プランの定義（将来的にここを変えるだけでいい）
 export const PLANS = {
-  SINGLE: "single_plan",       
-  MULTI: "multi",         
-  PREMIUM: "premium-plan" 
+  SINGLE: "demo01",       
+  MULTI: "demo02",         
+  PREMIUM: "demo03" 
 } as const;
