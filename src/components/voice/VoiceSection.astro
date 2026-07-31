@@ -1,0 +1,83 @@
+---
+import voiceData from './voiceSection.json';
+import SectionContainer from '@/components/common/SectionContainer.astro';
+import { Image } from 'astro:assets';
+import leftTopFrame from '@/assets/images/radiance.avif';
+
+// タイトルを「：」で分割する処理（FAQセクションと同様に美しく見せるため）
+const titleParts = voiceData.title ? voiceData.title.split('：') : ['お客様の声'];
+const hasColon = titleParts.length > 1;
+---
+
+<section class="py-20 bg-clr-wh-1/70">
+  <SectionContainer>
+    <div class="max-w-6xl mx-auto px-6">
+      
+      <!-- 見出しセクション -->
+      <h2 class="text-3xl md:text-4xl font-bold text-center mb-6 text-clr-base-1 leading-relaxed">
+        {hasColon ? (
+          <>
+            <span class="block text-xl md:text-2xl font-normal mb-2 text-clr-main-1">{titleParts[0]}：</span>
+            <span>{titleParts[1]}</span>
+          </>
+        ) : (
+          voiceData.title
+        )}
+      </h2>
+
+      {voiceData.description && (
+        <p class="txt-luster text-left text-clr-bl-1 mb-16 max-w-3xl mx-auto text-base leading-relaxed">
+          {voiceData.description}
+        </p>
+      )}
+
+      <!-- お客様の声カード一覧（2カラムグリッド） -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {voiceData.reviews.map((review) => (
+          <article class="relative rounded-2xl p-8 bg-gradient-to-b from-clr-base-1 via-clr-bl-1 to-clr-main-1 text-clr-wh-1 shadow-md hover:shadow-xl transition-all duration-300 flex flex-col justify-between border border-clr-main-1/30">
+
+            <!-- あしらい画像（光の演出） -->
+            <Image 
+              src={leftTopFrame} 
+              alt="あしらい" 
+              width={200} 
+              height={168}
+              class="absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 mix-blend-screen pointer-events-none backface-hidden"
+              style="will-change: transform; transform: translateZ(0);"
+              aria-hidden="true"
+            />
+
+            {/* style="will-change: transform; transform: translateZ(0);"
+            はiPhoneの表示で絶対に必要 */}
+
+            <div>
+              <!-- トピック（ご相談内容） -->
+              <div class="mb-4">
+                <span class="inline-block text-sm font-bold text-clr-base-1 bg-clr-accent px-3 py-1 rounded-full">
+                  {review.topic}
+                </span>
+              </div>
+
+              <!-- コメント本文 -->
+              <p class="text-clr-wh-1 text-base leading-relaxed mb-6">
+                「{review.comment}」
+              </p>
+            </div>
+
+            <!-- お客様のお名前・属性 -->
+            <div class="pt-4 border-t border-clr-wh-1/15 flex items-center justify-between">
+              <span class="text-base font-bold text-clr-main-2">
+                {review.name}
+              </span>
+              <span class="text-sm text-clr-wh-1/70">
+                セッションご感想
+              </span>
+            </div>
+
+          </article>
+        ))}
+      </div>
+
+    </div>
+  </SectionContainer>
+</section>

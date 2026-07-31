@@ -96,9 +96,51 @@ html {
     );
 }
 
+
+@layer base {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+span,
+div {
+	/* text-align: justify; */
+	font-feature-settings: "palt";
+	/* // line-height: 1.8em; //これは@layer base {}の中では効かない
+		//jsx中では、leading-**は、「!」を使用して詳細度を強くしている
+		//そうでないと、globals.scssの方が詳細度が強くなる */
+}
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+span,
+div {
+	line-height: 1.8em;
+	/* // line-height: 1.8em; //これは@layer base {}の中では効かない
+	//jsx中では、leading-**は、「!」を使用して詳細度を強くしている
+	//そうでないと、globals.scssの方が詳細度が強くなる */
+}
+
+
+
+
 .txt-shadow {
   text-shadow: 0 0 4px rgba(0,0,0,0.5), 0 0 6px rgba(0,0,0,1), 0 0 12px rgba(0,0,0,1), 0 0 18px rgba(0,0,0,1);
 }
+
+.txt-shadow-2 {
+  text-shadow: 0 0 4px rgba(25, 25, 43, 0.5), 0 0 6px rgb(25, 25, 43,1), 0 0 12px rgba(25, 25, 43,1), 0 0 18px rgba(25, 25, 43,1);
+}
+
 .txt-luster {
 text-shadow: 
     0 0 1px #fff, 

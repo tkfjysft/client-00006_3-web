@@ -1,0 +1,148 @@
+---
+import { getBlogs, getBlogDetail } from "@/lib/microcms.ts";
+import { resolveUrl } from '@/utils/pathHelper';
+import Layout from '@/layouts/Layout.astro';
+import SectionContainer from '@/components/common/SectionContainer.astro';
+import HeroSection from '@/components/common_lower_layer/HeroSection.astro';
+
+const currentUrl = Astro.url.pathname;
+
+
+// ① ビルド時に「どの記事ページを作るべきか」をAstroに教える関数
+export async function getStaticPaths() {
+  const response = await getBlogs({ fields: ["id"] });
+  
+  return response.contents.map((post) => ({
+    params: { blog_id: post.id },
+  }));
+}
+
+// ② URLから blog_id を受け取る
+const { blog_id } = Astro.params;
+
+// ③ microCMSから該当する記事のデータを取得
+const post = await getBlogDetail(blog_id);
+
+const safeContent = post.content
+  ? post.content.replace(/<h1(\s|>)/gi, '<h2$1').replace(/<\/h1>/gi, '</h2>')
+  : '';
+---
+<Layout title={post.title}>
+	<HeroSection title={post.title} subtitle="ブログ" txtSizeName="text-xl md:text-2xl" />
+	<div class="wrap ">
+<section class="py-20 bg-gradient-to-b from-clr-wh-1/70 via-clr-wh-1/60 to-clr-wh-1/40 text-clr-wh-1 min-h-screen">
+    <SectionContainer>
+        
+        <!-- 一覧に戻るリンク -->
+        <div class="mb-1">
+          <a 
+            href={resolveUrl('/blog/', currentUrl)}
+            class="inline-flex items-center gap-2 text-base text-clr-main-1 hover:text-clr-main-1/80 transition-colors duration-200 group"
+          >
+            <span class="transform group-hover:-translate-x-1 transition-transform duration-200">&lt;</span>
+            <span>記事一覧へ戻る</span>
+          </a>
+        </div>
+
+        <!-- 記事ヘッダー（タイトル・公開日） -->
+        <div class="mb-1 pb-1">
+
+
+          <div class="flex items-center gap-2 text-base text-clr-main-1">
+            <span class="font-bold">公開日:</span>
+            <time datetime={post.publishedAt}>
+              {new Date(post.publishedAt).toLocaleDateString('ja-JP', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+              })}
+            </time>
+          </div>
+        </div>
+
+        <!-- アイキャッチ画像 -->
+        {post.eyecatch && (
+          <div class="mb-12 rounded-3xl overflow-hidden border border-clr-main-1/10 shadow-xl bg-clr-base-1/80">
+            <img 
+              src={post.eyecatch.url} 
+              alt="" 
+              class="w-full h-auto object-cover max-h-[450px]"
+            />
+          </div>
+        )}
+
+        <!-- 本文エリア（microCMSのリッチエディタ出力） -->
+        <div class="post-content text-base md:text-lg text-clr-wh-1/90 leading-relaxed space-y-6">
+          <div class="blog-content txt-luster" set:html={safeContent} />
+        </div>
+
+		        <!-- 一覧に戻るリンク -->
+        <div class="mt-10">
+          <a 
+            href={resolveUrl('/blog/', currentUrl)}
+            class="inline-flex items-center gap-2 text-base text-clr-main-1 hover:text-clr-main-1/80 transition-colors duration-200 group"
+          >
+            <span class="transform group-hover:-translate-x-1 transition-transform duration-200">&lt;</span>
+            <span>記事一覧へ戻る</span>
+          </a>
+        </div>
+
+    </SectionContainer>
+  </section>
+  </div>
+
+</Layout>
+
+
+<style>
+	.blog-content :global(*) {
+		color: #303c4f; /* amber-600相当 */
+	}
+
+	.blog-content :global(h2) {
+		font-size: 1.5rem; /* 24px相当 */
+		font-weight: bold;
+		font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+		color: #4a423d;
+		margin-top: 2rem;
+		margin-bottom: 1rem;
+		padding-bottom: 0.5rem;
+		border-bottom: 1px solid #ece8e1;
+	}
+
+	.blog-content :global(h3) {
+		font-size: 1.25rem; /* 20px相当 */
+		font-weight: bold;
+		font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+		color: #4a423d;
+		margin-top: 1.5rem;
+		margin-bottom: 0.75rem;
+	}
+
+	.blog-content :global(p) {
+		margin-bottom: 1.25rem;
+		line-height: 1.8;
+	}
+
+	.blog-content :global(ul) {
+		list-style-type: disc;
+		padding-left: 1.5rem;
+		margin-bottom: 1.25rem;
+	}
+
+	.blog-content :global(ol) {
+		list-style-type: decimal;
+		padding-left: 1.5rem;
+		margin-bottom: 1.25rem;
+	}
+
+	.blog-content :global(li) {
+		margin-bottom: 0.5rem;
+	}
+
+	.blog-content :global(a) {
+		color: #d97706; /* amber-600相当 */
+		text-decoration: underline;
+	}
+
+</style>

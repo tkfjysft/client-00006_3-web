@@ -1,9 +1,11 @@
 ---
 // src/pages/multi/service.astro
 import HeroSection from '@/components/common_lower_layer/HeroSection.astro';
+import ProfileSection from '@/components/profile/ProfileSection.astro';
 import Layout from '@/layouts/Layout.astro';
-import heroData from '@/components/profile/hero.json';
+import heroData from '@/components/profile/heroSection.json';
 ---
 <Layout title={heroData.title}>
   <HeroSection title={heroData.title} subtitle={heroData.subtitle} />
+  <ProfileSection />
 </Layout>

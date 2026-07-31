@@ -1,15 +1,61 @@
 ---
-import { NAV_ITEMS, SITE_INFO } from '@data/site';
+import { NAV_ITEMS, SITE_INFO, BREADCRUMB_NAME_MAP } from '@data/site';
 import '@/styles/global.css';
 import Header from '@/components/common/Header.astro'; // 後ほど移動させるパス
 import Footer from '@/components/common/Footer.astro'; // 後ほど移動させるパス
 import ScrollToTop from '@/components/ScrollToTop.astro';
+import { resolveUrl } from '@/utils/pathHelper';
+import SectionContainer from '@/components/common/SectionContainer.astro';
 
 
 interface Props {
   title: string;
 }
 const { title } = Astro.props;
+
+
+//パンくずリスト
+// 現在のパスを取得し、末尾のスラッシュなどを正規化してトップかどうかを判定
+const currentUrl = Astro.url.pathname;
+const rawPath = Astro.url.pathname;
+const normalizedPath = rawPath.replace(/\/index\.html$/, '').replace(/\/$/, '');
+const isTopPage = normalizedPath === '' || normalizedPath === resolveUrl('', currentUrl);
+
+const segments = rawPath.split('/').filter(Boolean);
+
+// パンくずリストのアイテム配列を自動構築
+const breadcrumbs = [
+  { name: 'ホーム', path: '/' },
+];
+
+let accumulatedPath = '';
+segments.forEach((segment, index) => {
+  accumulatedPath += `/${segment}`;
+  
+  let name = BREADCRUMB_NAME_MAP[segment] || segment;
+  
+  if (segments[index - 1] === 'blog' && segment !== 'blog') {
+    name = title; 
+  }
+
+  breadcrumbs.push({
+    name: name,
+    path: `${accumulatedPath}/`,
+  });
+});
+
+// 構造化データ（JSON-LD）用のデータ作成
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": breadcrumbs.map((crumb, index) => ({
+    "@type": "ListItem",
+    "position": index + 1,
+    "name": crumb.name,
+    "item": new URL(crumb.path, Astro.site || 'https://example.com').href
+  }))
+};
+//パンくずリスト
 ---
 
 <!doctype html>
@@ -20,11 +66,56 @@ const { title } = Astro.props;
     <meta name="description" content={SITE_INFO.metaDescription} />
     <title>{title} | {SITE_INFO.title}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  </head>
+  
+<!-- パンくずリスト構造化データ -->
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+</head>
   <body class="min-h-screen animate-fade-in">
     <Header />
 
     <div class="bg-fixed-container"></div>
+
+
+
+	<!-- 全ページ共通のパンくずリスト表示エリア -->
+{!isTopPage && (
+      <nav aria-label="パンくずリスト" class="bg-clr-base-1/80 border-b border-clr-main-1/20 py-1 sm:py-2 text-xs sm:text-sm mt-16 sm:mt-20">
+		<SectionContainer py="py-0">
+
+        <ol class="mx-auto flex flex-wrap items-center gap-2 text-clr-wh-1/80">
+          {breadcrumbs.map((crumb, index) => {
+            const isLast = index === breadcrumbs.length - 1;
+            const resolvedPath = resolveUrl(crumb.path, rawPath);
+
+            return (
+              <li class="flex items-center gap-2">
+                {index > 0 && (
+                  <span class="text-clr-main-2 text-sm select-none" aria-hidden="true">&gt;</span>
+                )}
+                {isLast ? (
+                  <span class="text-clr-accent font-bold truncate max-w-[200px] sm:max-w-none" aria-current="page">
+                    {crumb.name}
+                  </span>
+                ) : (
+                  <a 
+                    href={resolvedPath}
+                    class="hover:text-clr-accent transition-colors duration-200"
+                  >
+                    {crumb.name}
+                  </a>
+                )}
+              </li>
+            );
+          })}
+        </ol>
+		</SectionContainer>
+      </nav>
+    )}
+	<!-- 全ページ共通のパンくずリスト表示エリア -->
+
+
+
 
     <main>
       <slot />
