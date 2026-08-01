@@ -25,8 +25,20 @@ const navItems =
 <SectionContainer class="relative z-10" py="py-0">
 
   <div class="flex items-center justify-between mx-auto py-4 h-16 sm:h-20">
-    <div class="txt-luster text-3xl lg:text-[2.5vw] xl:text-4xl font-serif font-bold text-clr-bl-1"><Link href={resolveUrl('/', currentUrl)}>{SITE_INFO.title}</Link></div>
+    <!-- <div class="txt-luster text-3xl lg:text-[2.5vw] xl:text-4xl font-serif font-bold text-clr-bl-1"><Link href={resolveUrl('/', currentUrl)}>{SITE_INFO.title}</Link></div> -->
     
+    <div class="w-[200px] sm:w-[30vw] lg:w-[18vw] h-full flex items-center">
+		<Link href={resolveUrl('/', currentUrl)}>
+		<img
+		src={`/src/assets/images/${SITE_INFO.titleLogoImage}`}
+		alt={SITE_INFO.title}
+		width="300"
+		height="63"
+		/>
+	</Link>
+	</div>
+
+
     <nav class="hidden lg:flex gap-6">
       {navItems.map((item) => {
           const Icon = getIcon(item.icon);

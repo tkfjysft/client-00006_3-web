@@ -1,5 +1,6 @@
 export const SITE_INFO = {
   title: "YUKI'S SESSION",
+  titleLogoImage: "logo_yukissession.avif",
   metaDescription: "宇宙からの叡智を、あなたの心へ。魂とつながるチャネリング・セッション。高次元のガイドやハイヤーセルフからのメッセージを通じ、迷いを手放し、本来の自分へと還るための深い気づきをお届けします。人生の目的や現状の悩み、魂の道しるべを知りたい方はぜひ一度ご相談ください。",
   ownerName: "ユキ",
   ownerFullname: "神城 ユキ",
