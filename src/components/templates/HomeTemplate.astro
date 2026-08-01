@@ -1,0 +1,61 @@
+	---
+	import Layout from '@/layouts/Layout.astro';
+	import Hero from '@/components/index/Hero/Hero.astro';
+	import Greeting from '@/components/index/Greeting/Greeting.astro';
+	import ServiceSection from '@/components/index/ServiceSection/ServiceSection.astro';
+	import FlowSection from '@/components/index/FlowSection/FlowSection.astro';
+	import TestimonialSection from '@/components/index/TestimonialSection/TestimonialSection.astro';
+	import FaqSection from '@/components/index/FaqSection/FaqSection.astro';
+	import ProfileSection from '@/components/index/ProfileSection/ProfileSection.astro';
+	import { resolveUrl } from '@/utils/pathHelper';
+	import { SITE_URLS } from '@/data/site';
+
+	interface Props {
+	isSinglePage?: boolean; // ★ 単一ページかどうかのフラグに変更
+	}
+
+	const { isSinglePage = true } = Astro.props; // デフォルトは単一ページなど
+	const currentPath = Astro.url.pathname;
+
+	// 「単一ページでなければ（＝複数ページやプレミアムなら）ボタンを表示する」という判定
+	const showDetailButton = !isSinglePage;
+	---
+
+	<Layout title="トップページ">
+	<Hero />
+	<div class="wrap">
+	<Greeting />
+
+	<ServiceSection
+		isSinglePage={!showDetailButton}
+		showDetailButton={showDetailButton}
+		detailUrl={resolveUrl(SITE_URLS.SERVICE, currentPath)}
+	/>
+
+	<FlowSection
+		isSinglePage={!showDetailButton}
+		showDetailButton={showDetailButton}
+		detailUrl={resolveUrl(SITE_URLS.SERVICE, currentPath)}
+	/>
+
+	<TestimonialSection
+		isSinglePage={!showDetailButton}
+		showDetailButton={showDetailButton}
+		detailUrl={resolveUrl(SITE_URLS.VOICE, currentPath)}
+	/>
+
+	<FaqSection
+		isSinglePage={!showDetailButton}
+		showDetailButton={showDetailButton}
+		detailUrl={resolveUrl(SITE_URLS.FAQ, currentPath)}
+	/>
+
+	<ProfileSection
+		isSinglePage={!showDetailButton}
+		showDetailButton={showDetailButton}
+		detailUrl={resolveUrl(SITE_URLS.PROFILE, currentPath)}
+	/>
+
+	<section class="pt-200 bg-[#ffffff05]"></section>
+	</div>
+	</Layout>

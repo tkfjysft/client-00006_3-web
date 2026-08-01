@@ -1,22 +1,5 @@
 ---
-import Layout from '@/layouts/Layout.astro';
-import Hero from '@/components/index/Hero/Hero.astro';
-import Greeting from '@/components/index/Greeting/Greeting.astro';
-import ServiceSection from '@/components/index/ServiceSection/ServiceSection.astro';
-import FlowSection from '@/components/index/FlowSection/FlowSection.astro';
-import TestimonialSection from '@/components/index/TestimonialSection/TestimonialSection.astro';
-import FaqSection from '@/components/index/FaqSection/FaqSection.astro';
-import ProfileSection from '@/components/index/ProfileSection/ProfileSection.astro';
+import HomeTemplate from '@/components/templates/HomeTemplate.astro';
 ---
-<Layout title="トップページ">
-  <Hero />
-  <div class="wrap">
-  <Greeting />
-  <ServiceSection />
-  <FlowSection />
-  <TestimonialSection />
-  <FaqSection />
-  <ProfileSection />
-  <section class="pt-200 bg-[#ffffff05]"></section>
-  </div>
-</Layout>
+
+<HomeTemplate isSinglePage={false} />

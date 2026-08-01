@@ -52,16 +52,42 @@ export const SITE_INFO = {
   }
 };
 
-const BASE_NAV_ITEMS = [
-  { text: 'トップ', icon: 'Sun', singleUrl: '/', multiUrl: '/' },
-  { text: 'セッション', icon: 'Sparkles', singleUrl: '/#service', multiUrl: '/service' },
-  { text: 'お客様の声', icon: 'MessageCircle', singleUrl: '/#voice', multiUrl: '/voice' },
-  { text: 'よくあるご質問', icon: 'HelpCircle', singleUrl: '/#faq', multiUrl: '/faq' },
-  { text: 'プロフィール', icon: 'User', singleUrl: '/#profile', multiUrl: '/profile' },
-  { text: 'ブログ', icon: 'User', singleUrl: '/blog', multiUrl: '/blog' },
-  { text: 'ご予約/お問い合わせ', icon: 'Mail', singleUrl: '/contact', multiUrl: '/contact' },
-];
 
+
+
+// 1. まず各URLのベーススラッグを定義（ここだけ変えればすべてに連動する）
+export const SITE_URLS = {
+  TOP: '/',
+  SERVICE: '/service',
+  VOICE: '/voice',
+  FAQ: '/faq',
+  PROFILE: '/profile',
+  BLOG: '/blog',
+  CONTACT: '/contact',
+} as const;
+
+// 2. 単一ページ用のハッシュリンクを SITE_URLS から自動組み立て
+export const SINGLE_URLS = {
+  TOP: SITE_URLS.TOP,
+  // スラッグの先頭の '/' を外して '/#〇〇' に変換する
+  SERVICE: `/#${SITE_URLS.SERVICE.replace('/', '')}`,
+  VOICE: `/#${SITE_URLS.VOICE.replace('/', '')}`,
+  FAQ: `/#${SITE_URLS.FAQ.replace('/', '')}`,
+  PROFILE: `/#${SITE_URLS.PROFILE.replace('/', '')}`,
+  BLOG: SITE_URLS.BLOG,
+  CONTACT: SITE_URLS.CONTACT,
+} as const;
+
+// 3. 組み合わせる
+export const BASE_NAV_ITEMS = [
+  { text: 'トップ', icon: 'Sun', singleUrl: SINGLE_URLS.TOP, multiUrl: SITE_URLS.TOP },
+  { text: 'セッション', icon: 'Sparkles', singleUrl: SINGLE_URLS.SERVICE, multiUrl: SITE_URLS.SERVICE },
+  { text: 'お客様の声', icon: 'MessageCircle', singleUrl: SINGLE_URLS.VOICE, multiUrl: SITE_URLS.VOICE },
+  { text: 'よくあるご質問', icon: 'HelpCircle', singleUrl: SINGLE_URLS.FAQ, multiUrl: SITE_URLS.FAQ },
+  { text: 'プロフィール', icon: 'User', singleUrl: SINGLE_URLS.PROFILE, multiUrl: SITE_URLS.PROFILE },
+  { text: 'ブログ', icon: 'User', singleUrl: SINGLE_URLS.BLOG, multiUrl: SITE_URLS.BLOG },
+  { text: 'ご予約/お問い合わせ', icon: 'Mail', singleUrl: SINGLE_URLS.CONTACT, multiUrl: SITE_URLS.CONTACT },
+] as const;
 // 2. mapを使って single と multi を自動生成
 export const NAV_ITEMS = {
   single: BASE_NAV_ITEMS.map(item => ({

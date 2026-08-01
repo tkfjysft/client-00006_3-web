@@ -1,0 +1,17 @@
+---
+interface Props {
+  href: string;
+  text?: string; // ボタンのテキスト（デフォルト値を設定可能）
+}
+
+const { href, text = "" } = Astro.props;
+---
+
+<div class="text-center mt-20">
+  <a 
+    href={href} 
+    class="inline-block px-8 py-6 w-full bg-clr-wh-1 text-clr-main-1 text-xl rounded-full shadow-md transition hover:opacity-80"
+  >
+    {text === "" ? "詳しくはこちら" : `${text} 詳しくはこちら`}
+  </a>
+</div>

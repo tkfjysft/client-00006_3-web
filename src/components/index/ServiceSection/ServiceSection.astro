@@ -9,7 +9,20 @@ import lineBright from '@/assets/images/line_bright.avif';
 import serviceData from './service.json';
 if (!serviceData) throw new Error("service.jsonが見つかりません");
 
-const { title, description, items } = serviceData;
+const { title, description, items, summaryTitle, summary } = serviceData;
+
+import { BASE_NAV_ITEMS } from '@/data/site';
+
+// 1. HomeTemplate からプロパティを受け取る定義を追加
+interface Props {
+  showDetailButton?: boolean;
+  detailUrl?: string;
+  isSinglePage?: boolean;
+}
+
+const { showDetailButton = false, detailUrl = '#' } = Astro.props;
+const { isSinglePage = true } = Astro.props;
+import DetailButton from '@/components/common/DetailButton.astro';
 ---
 
 <section id="service" class="section-margin-y py-32 relative overflow-hidden">
@@ -79,5 +92,17 @@ const { title, description, items } = serviceData;
         </div>
       ))}
     </div>
+
+	{isSinglePage && (
+      <div class="my-12 text-clr-bl-1 text-lg max-w-lg mx-auto leading-relaxed bg-white/50 backdrop-blur-md border border-white/10 p-6 mb-16 md:p-8 rounded-3xl shadow-2xl">
+        <h3 class="text-2xl font-bold mb-4">{summaryTitle}</h3>
+        <p>{summary}</p>
+      </div>
+    )}
+
+	{showDetailButton && (
+    <DetailButton href={detailUrl} text={BASE_NAV_ITEMS[1].text} />
+  	)}
+
   </SectionContainer>
 </section>

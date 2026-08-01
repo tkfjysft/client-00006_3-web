@@ -5,7 +5,20 @@ import { Image } from 'astro:assets';
 import lineBright from '@/assets/images/line_bright.avif';
 
 import flowData from './flow.json';
-const { title, steps } = flowData;
+const { title, steps, summaryTitle, summary } = flowData;
+
+import { BASE_NAV_ITEMS } from '@/data/site';
+
+// 1. HomeTemplate からプロパティを受け取る定義を追加
+interface Props {
+  showDetailButton?: boolean;
+  detailUrl?: string;
+  isSinglePage?: boolean;
+}
+
+const { showDetailButton = false, detailUrl = '#' } = Astro.props;
+const { isSinglePage = true } = Astro.props;
+import DetailButton from '@/components/common/DetailButton.astro';
 ---
 
 <section class="section-margin-y py-24 md:py-32 text-clr-wh-1 relative overflow-hidden">
@@ -53,5 +66,18 @@ const { title, steps } = flowData;
         );
       })}
     </div>
+
+	{isSinglePage && (
+      <div class="my-12 text-clr-wh-1 text-lg mx-auto leading-relaxed bg-clr-main-1/50 backdrop-blur-md border border-white/10 p-6 mb-16 md:p-8 rounded-3xl shadow-2xl">
+        <h3 class="text-2xl text-clr-wh-1 font-bold mb-4">{summaryTitle}</h3>
+        <p>{summary}</p>
+      </div>
+    )}
+
+	{showDetailButton && (
+    <DetailButton href={detailUrl} text={BASE_NAV_ITEMS[1].text} />
+  	)}
+
+
   </SectionContainer>
 </section>

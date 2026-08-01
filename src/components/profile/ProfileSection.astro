@@ -1,6 +1,8 @@
 ---
 import { SITE_INFO } from '@/data/site';
 const profileData = SITE_INFO.profile;
+import profileImage from '@/assets/images/owner/face_owner.avif';
+
 import SectionContainer from '@/components/common/SectionContainer.astro';
 import { Image } from 'astro:assets';
 import leftTopFrame from '@/assets/images/radiance.avif';
@@ -26,11 +28,22 @@ const hasColon = titleParts.length > 1;
         )}
       </h2>
 
+	  
       {profileData.subtitle && (
         <p class="txt-shadow-2 text-center text-clr-accent mb-16 text-lg md:text-xl font-serif font-bold tracking-wide">
           {profileData.subtitle}
         </p>
       )}
+
+
+      <div class="flex justify-center mb-10">
+        <Image 
+          src={profileImage} 
+          alt={SITE_INFO.ownerName} 
+          class="shadow-2xl w-[280px] md:w-[320px] aspect-[4/5] object-cover brightness-90 border border-clr-main-1/20" 
+        />
+      </div>
+
 
       <!-- メインプロフィールカード（お名前・リード文・タグ） -->
       <div class="relative rounded-3xl p-8 md:p-12 bg-clr-base-1/90 border border-clr-main-1/40 shadow-xl overflow-hidden mb-12">
@@ -135,7 +148,6 @@ const hasColon = titleParts.length > 1;
           <p class="text-base md:text-lg text-clr-wh-1 leading-relaxed max-w-2xl mx-auto">
             {profileData.message}
           </p>
-		  <p><a href="service">さーびす</a></p>
         </div>
       )}
 

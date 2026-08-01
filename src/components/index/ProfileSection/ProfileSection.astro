@@ -10,6 +10,19 @@ import data from './profile.json';
 if (!data) throw new Error("profile.jsonが見つかりません");
 
 const { title, text, tags } = data;
+
+import { BASE_NAV_ITEMS } from '@/data/site';
+
+// 1. HomeTemplate からプロパティを受け取る定義を追加
+interface Props {
+  showDetailButton?: boolean;
+  detailUrl?: string;
+  isSinglePage?: boolean;
+}
+
+const { showDetailButton = false, detailUrl = '#' } = Astro.props;
+const { isSinglePage = true } = Astro.props;
+import DetailButton from '@/components/common/DetailButton.astro';
 ---
 
 <section id="profile" class="section-margin-y py-24 md:py-32 text-clr-wh-1">
@@ -63,5 +76,20 @@ const { title, text, tags } = data;
 
 	</div>
     </div>
+
+		{isSinglePage && (
+	      
+        <div class="max-w-5xl mx-auto rounded-3xl p-8 md:p-10 bg-gradient-to-b from-clr-base-1 via-clr-bl-1 to-clr-main-1 border border-clr-accent/10 text-center shadow-lg">
+          <h4 class="text-xl font-serif font-bold text-clr-accent mb-4">あなたへ贈るメッセージ</h4>
+          <p class="text-base md:text-lg text-clr-wh-1 leading-relaxed max-w-2xl mx-auto">
+            {SITE_INFO.profile.message}
+          </p>
+        </div>
+	)}
+
+	{showDetailButton && (
+    <DetailButton href={detailUrl} text={BASE_NAV_ITEMS[4].text} />
+  	)}
+	
   </SectionContainer>
 </section>

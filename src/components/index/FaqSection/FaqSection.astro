@@ -8,7 +8,20 @@ import lineBright from '@/assets/images/line_bright.avif';
 import data from './faq.json';
 if (!data) throw new Error("faq.jsonが見つかりません");
 
-const { title, questions } = data;
+const { title, questions, questionsSecond } = data;
+
+import { BASE_NAV_ITEMS } from '@/data/site';
+
+// 1. HomeTemplate からプロパティを受け取る定義を追加
+interface Props {
+  showDetailButton?: boolean;
+  detailUrl?: string;
+  isSinglePage?: boolean;
+}
+
+const { showDetailButton = false, detailUrl = '#' } = Astro.props;
+const { isSinglePage = true } = Astro.props;
+import DetailButton from '@/components/common/DetailButton.astro';
 ---
 
 <section id="faq" class="section-margin-y py-24 md:py-32 text-clr-wh-1">
@@ -49,5 +62,34 @@ const { title, questions } = data;
         </details>
       ))}
     </div>
+
+	{isSinglePage && (
+    <div class="max-w-3xl mx-auto space-y-6 mt-6">
+      {questionsSecond.map((item) => (
+        <details class="relative group bg-gradient-to-b from-clr-base-1/80 to-clr-base-1/99 border border-clr-wh-1/10 p-10 hover:border-clr-main-1/50 transition-all duration-700 rounded-2xl">
+
+
+
+          <summary class="text-lg md:text-xl font-serif text-clr-main-2 cursor-pointer flex justify-between items-center list-none outline-none">
+            <span class="flex items-center gap-4">
+              <HelpCircle class="w-6 h-6 flex-shrink-0 text-clr-accent-1" />
+              {item.q}
+            </span>
+            <span class="text-clr-wh-1 group-open:rotate-180 transition-transform duration-300 ml-4">
+              ▼
+            </span>
+          </summary>
+          <p class="text-base md:text-lg text-clr-wh-1/90 mt-6 leading-relaxed pt-6 border-t border-clr-main-1/20">
+            {item.a}
+          </p>
+        </details>
+      ))}
+    </div>
+    )}
+
+	{showDetailButton && (
+    <DetailButton href={detailUrl} text={BASE_NAV_ITEMS[3].text} />
+  	)}
+	
   </SectionContainer>
 </section>
