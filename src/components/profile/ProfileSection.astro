@@ -2,6 +2,7 @@
 import { SITE_INFO } from '@/data/site';
 const profileData = SITE_INFO.profile;
 import profileImage from '@/assets/images/owner/face_owner.avif';
+import ChannelingImage from '@/assets/images/owner/channeling_owner.avif';
 
 import SectionContainer from '@/components/common/SectionContainer.astro';
 import { Image } from 'astro:assets';
@@ -36,11 +37,16 @@ const hasColon = titleParts.length > 1;
       )}
 
 
-      <div class="flex justify-center mb-10">
+      <div class="flex flex-col items-center gap-10 sm:flex-row sm:justify-between sm:gap-0 mx-auto mb-10">
         <Image 
           src={profileImage} 
           alt={SITE_INFO.ownerName} 
-          class="shadow-2xl w-[280px] md:w-[320px] aspect-[4/5] object-cover brightness-90 border border-clr-main-1/20" 
+          class="shadow-2xl w-full sm:w-[40vw] max-w-[400px] aspect-[4/5] object-cover brightness-90 border border-clr-main-1/20" 
+        />
+		 <Image 
+          src={ChannelingImage} 
+          alt={SITE_INFO.ownerName} 
+          class="shadow-2xl w-full sm:w-[40vw] max-w-[400px] aspect-[4/5] object-cover brightness-90 border border-clr-main-1/20" 
         />
       </div>
 
