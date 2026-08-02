@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
+import react from '@astrojs/react';
 
 export default defineConfig({
   outDir: './dist',
@@ -14,4 +15,5 @@ export default defineConfig({
     assets: '_demo-assets',
   },
   output: 'static',
+  integrations: [react()],
 });

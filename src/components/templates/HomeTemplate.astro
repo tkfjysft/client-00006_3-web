@@ -9,22 +9,31 @@
 	import ProfileSection from '@/components/index/ProfileSection/ProfileSection.astro';
 	import { resolveUrl } from '@/utils/pathHelper';
 	import { SITE_URLS } from '@/data/site';
+	import FramerMotionSection from '@/components/FramerMotionSection.tsx';
 
 	interface Props {
 	isSinglePage?: boolean; // ★ 単一ページかどうかのフラグに変更
+	variant?: 'default' | 'rich'; // ← 追加：リッチ版の切り替え用プロパティ
 	}
 
-	const { isSinglePage = true } = Astro.props; // デフォルトは単一ページなど
+	const { isSinglePage = true, variant = 'default' } = Astro.props; // デフォルトは単一ページなど
 	const currentPath = Astro.url.pathname;
 
 	// 「単一ページでなければ（＝複数ページやプレミアムなら）ボタンを表示する」という判定
 	const showDetailButton = !isSinglePage;
+	const isRich = variant === 'rich';
 	---
 
-	<Layout title="トップページ">
-	<Hero />
-	<div class="wrap">
-	<Greeting />
+	<Layout title="トップページ" variant={variant}>
+	<Hero variant={variant}  />
+	<div class={isRich ? "" : "wrap"}>
+
+{/* isRich が true のときだけ、クライアントサイドで動的にハイドレーションする */}
+    {isRich && (
+      <FramerMotionSection client:load />
+    )}
+
+	<Greeting variant={variant} />
 
 	<ServiceSection
 		isSinglePage={!showDetailButton}
@@ -59,3 +68,50 @@
 	<section class="pt-200 bg-[#ffffff05]"></section>
 	</div>
 	</Layout>
+
+
+	<!-- demo03（isRich）のときだけ、スムーズスクロール ＆ 背景連動を有効化 -->
+    {isRich && (
+      <>
+        <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+        <script is:inline>
+          window.addEventListener('DOMContentLoaded', () => {
+            if (typeof Lenis !== 'undefined') {
+              const lenis = new Lenis({
+                duration: 1.2,
+                easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+                smoothWheel: true,
+              });
+
+              function raf(time) {
+                lenis.raf(time);
+                requestAnimationFrame(raf);
+              }
+              requestAnimationFrame(raf);
+
+              // ─── スクロール連動の背景変化 ───
+// ─── スクロール連動の背景変化 ───
+const scrollWrap = document.querySelector('.scroll-bg-wrap');
+if (scrollWrap) {
+  lenis.on('scroll', (e) => {
+    const currentScroll = e.scroll;
+    
+    // 【ここでタイミングを完全にコントロール】
+    const startScroll = 0;   // ページ最上部（0px）からスタート
+    const maxScroll = 600;   // 600pxスクロールした（＝挨拶セクションが終わる頃）で変化がMAXになる
+    
+    // 0 から 1 の間の進捗を正しく計算する
+    let progress = (currentScroll - startScroll) / (maxScroll - startScroll);
+    progress = Math.max(0, Math.min(1, progress));
+    
+    // ちゃんと変化しているか確認するためのログ
+    console.log('現在位置:', Math.round(currentScroll), '進捗率:', progress.toFixed(2));
+    
+    scrollWrap.style.setProperty('--scroll-progress', progress);
+  });
+}
+            }
+          });
+        </script>
+      </>
+    )}

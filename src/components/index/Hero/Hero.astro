@@ -3,9 +3,18 @@ import heroData from './hero.json';
 import { resolveUrl } from '@/utils/pathHelper';
 const { heroTitle, heroSub, heroDescription, buttonText } = heroData;
 const currentUrl = Astro.url.pathname;
+
+import HeroMotion from './HeroMotion';
+const contactUrl = resolveUrl('/contact', currentUrl);
+
+interface Props {
+  variant?: 'default' | 'rich';
+}
+const { variant = 'default' } = Astro.props;
+const isRich = variant === 'rich';
 ---
 
-
+{!isRich ? (
 
 <section class="relative w-full h-screen overflow-hidden">
   
@@ -29,6 +38,17 @@ const currentUrl = Astro.url.pathname;
 
 </section>
 
+) : (
+<HeroMotion 
+  client:load
+  heroSub={heroSub}
+  heroTitle={heroTitle}
+  heroDescription={heroDescription}
+  buttonText={buttonText}
+  contactUrl={contactUrl}
+/>
+
+)}
 
 
 
