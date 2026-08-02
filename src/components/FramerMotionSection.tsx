@@ -43,7 +43,7 @@ export default function FramerMotionSection({
       id="framermotion-section" 
       data-bg="light" 
       className={`
-        relative w-full mt-300 py-32 overflow-hidden min-h-[200vh] ${className}
+        relative w-full mt-300 py-32 overflow-hidden min-h-[1vh] ${className}
       `}
     >
       {/* 画面全体を覆って色調を変化させる固定レイヤー */}

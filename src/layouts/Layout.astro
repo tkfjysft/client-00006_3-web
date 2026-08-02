@@ -141,6 +141,11 @@ const isRich = variant === 'rich'; // ← 判定用
         menu?.classList.toggle('hidden');
       });
     </script>
+
+
+
+
+
 		<!-- ページ内リンク時の#idの付与をとめる -->
 <script is:inline>
   document.addEventListener('click', function(e) {
@@ -193,6 +198,11 @@ const isRich = variant === 'rich'; // ← 判定用
   });
 </script>
 
+
+
+
+
+
 <!-- demo03（isRich）のときだけ、スムーズスクロール（Lenis）を有効化 -->
 {isRich && (
   <>
@@ -229,6 +239,37 @@ const isRich = variant === 'rich'; // ← 判定用
     </script>
   </>
 )}
+
+
+
+
+
+<!-- フェードインアニメーション -->
+{isRich && (
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const observerOptions = {
+        root: null,
+        rootMargin: '0px 0px -25% 0px',
+        threshold: 0.1,
+      };
+
+      const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.remove('opacity-0', 'translate-y-20');
+            entry.target.classList.add('opacity-100', 'translate-y-0');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, observerOptions);
+
+      const targets = document.querySelectorAll('.demo03-fade-target');
+      targets.forEach((target) => observer.observe(target));
+    });
+  </script>
+)}
+
 
   </body>
 </html>

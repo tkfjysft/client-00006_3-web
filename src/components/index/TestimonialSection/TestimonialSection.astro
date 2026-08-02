@@ -17,43 +17,72 @@ interface Props {
   showDetailButton?: boolean;
   detailUrl?: string;
   isSinglePage?: boolean;
+  variant?: 'default' | 'rich';
 }
 
-const { showDetailButton = false, detailUrl = '#' } = Astro.props;
-const { isSinglePage = true } = Astro.props;
+const { 
+  showDetailButton = false, 
+  detailUrl = '#', 
+  isSinglePage = true,
+  variant = 'default' 
+} = Astro.props;
+
+const isRich = variant === 'rich';
+
 import DetailButton from '@/components/common/DetailButton.astro';
 ---
 
 <section id="voice" class="section-margin-y py-24 md:py-32 text-clr-wh-1">
   <SectionContainer>
-    <div class="relative mb-20">
-	<Image 
-		src={lineBright} 
-		alt="サブタイトル背景" 
-		width={713} 
-		height={300}
-		class="absolute inset-0 top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 z-[-1] w-[100vw] pointer-events-none mix-blend-screen"
-		aria-hidden="true"
-    />  
+	<div 
+      class:list={[
+        "relative mb-20 transition-all duration-2500 ease-out",
+        isRich ? "demo03-fade-target transform translate-y-20 opacity-0" : ""
+      ]}
+      style={isRich ? `will-change: transform; transition-delay: 0.1s;` : undefined}
+    >
+      <Image 
+        src={lineBright} 
+        alt="サブタイトル背景" 
+        width={713} 
+        height={245}
+        class="absolute inset-0 top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 z-[-1] w-[100vw] pointer-events-none backface-hidden"
+        style="will-change: transform; transform: translateZ(0);"
+        aria-hidden="true"
+      />  
       <h2 class="txt-luster [text-shadow:_0_0_30px_white] text-3xl text-center md:text-6xl font-serif text-clr-main-1 sm:tracking-widest mb-6">
         {title}
       </h2>
-	</div>
+    </div>  
 
     <div class="grid md:grid-cols-2 gap-8">
-      {reviews.map((review) => (
-        <div class="relative group bg-gradient-to-b from-clr-base-1/80 to-clr-base-1/99 border border-clr-wh-1/10 p-10 hover:border-clr-main-1/50 transition-all duration-700 rounded-2xl flex flex-col">
+      {reviews.map((review, index) => (
+        <div class="relative">
           
-			<Image 
-				src={leftTopFrame} 
-				alt="あしらい" 
-				width={200} 
-				height={168}
-				class="absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 mix-blend-screen pointer-events-none backface-hidden"
-				style="will-change: transform; transform: translateZ(0);"
-				aria-hidden="true"
-			/>  
+          {/* あしらい：カードの外側（親要素）に配置してmix-blend-screenを確実に効かせる */}
+          <div class="absolute -top-20 -left-24 z-30 pointer-events-none mix-blend-screen">
+            <Image 
+              src={leftTopFrame} 
+              alt="あしらい" 
+              width={200} 
+              height={168}
+              class:list={[
+                "mix-blend-screen pointer-events-none backface-hidden transition-all duration-2000 ease-out",
+                isRich ? "demo03-fade-target transform translate-y-20 opacity-0" : ""
+              ]}
+              style={isRich ? `will-change: transform; transform: translateZ(0); transition-delay: ${(index * 0.2) + 0.7}s;` : `will-change: transform; transform: translateZ(0);`}
+              aria-hidden="true"
+            />  
+          </div>
 
+         {/* カード本体：アニメーションと背景色を持つ */}
+          <div 
+            class:list={[
+              "relative group bg-gradient-to-b from-clr-base-1/80 to-clr-base-1/99 border border-clr-wh-1/10 p-10 hover:border-clr-main-1/50 rounded-2xl h-full flex flex-col transition-all duration-1200 ease-out",
+              isRich ? "demo03-fade-target transform translate-y-20 opacity-0" : ""
+            ]}
+            style={isRich ? `transition-delay: ${index * 0.2}s;` : undefined}
+          >
           <Quote class="w-8 h-8 text-clr-main-2 mb-6 opacity-50" />
 
           <p class="text-base md:text-lg text-clr-wh-1/90 leading-relaxed mb-10 flex-grow italic">
@@ -71,6 +100,7 @@ import DetailButton from '@/components/common/DetailButton.astro';
             </div>
           </div>
         </div>
+		</div>
       ))}
     </div>
 

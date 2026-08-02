@@ -17,7 +17,7 @@ const content = greetingData.content.replace('{NAME}', SITE_INFO.ownerName);
 const { title } = greetingData;
 ---
 
-<section class="relative py-24 overflow-hidden mt-[50vh]">
+<section class="relative py-24 overflow-hidden mt-0">
   <SectionContainer class="section-margin-y flex flex-col items-center relative z-10">
     <div 
       class:list={[
@@ -26,10 +26,8 @@ const { title } = greetingData;
           - duration-1000 から duration-1200（1.2秒）にして、よりゆったりと上品な余韻に
           - 最初の位置を translate-y-12 に少し深くして、動く距離をしっかり感じさせる
         */
-        "p-6 md:p-8 rounded-3xl shadow-2xl transition-all duration-1500 ease-out text-base md:text-lg",
-        isRich 
-          ? "demo03-fade-target transform translate-y-30 opacity-0 bg-clr-wh-1/50 backdrop-blur-xl text-clr-bl-1 shadow-clr-main-1/10" 
-          : "bg-clr-wh-1/50 backdrop-blur-md border border-clr-wh-1/10 text-clr-bl-1"
+        "p-6 md:p-8 rounded-3xl shadow-2xl transition-all duration-2000 ease-out text-base md:text-lg bg-clr-wh-1/50 backdrop-blur-md border border-clr-wh-1/10 text-clr-bl-1",
+		isRich ? "demo03-fade-target transform translate-y-20 opacity-0" : ""
       ]}
     >
 
@@ -61,33 +59,3 @@ const { title } = greetingData;
     </div>
   </SectionContainer>
 </section>
-
-{isRich && (
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const observerOptions = {
-        root: null,
-        /* 
-          【調整ポイント1】
-          - rootMargin を調整して、画面の下端ではなく「もう少し上（画面の中央寄り）」に入ってきたら発火するようにする
-          - 下から -15% の位置をラインにして、そこを通過した瞬間にアニメーション開始
-        */
-        rootMargin: '0px 0px -15% 0px',
-        threshold: 0.2, // 20%以上が見えたら
-      };
-
-      const observer = new IntersectionObserver((entries, observer) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.remove('opacity-0', 'translate-y-12');
-            entry.target.classList.add('opacity-100', 'translate-y-0');
-            observer.unobserve(entry.target);
-          }
-        });
-      }, observerOptions);
-
-      const targets = document.querySelectorAll('.demo03-fade-target');
-      targets.forEach((target) => observer.observe(target));
-    });
-  </script>
-)}

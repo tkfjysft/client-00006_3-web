@@ -14,29 +14,45 @@ interface Props {
   showDetailButton?: boolean;
   detailUrl?: string;
   isSinglePage?: boolean;
+  variant?: 'default' | 'rich';
 }
 
-const { showDetailButton = false, detailUrl = '#' } = Astro.props;
-const { isSinglePage = true } = Astro.props;
+const { 
+  showDetailButton = false, 
+  detailUrl = '#', 
+  isSinglePage = true,
+  variant = 'default' 
+} = Astro.props;
+
+const isRich = variant === 'rich';
+
 import DetailButton from '@/components/common/DetailButton.astro';
 ---
 
 <section class="section-margin-y py-24 md:py-32 text-clr-wh-1 relative overflow-hidden">
   <SectionContainer>
-    <div class="relative mb-20">
-	<Image 
-		src={lineBright} 
-		alt="サブタイトル背景" 
-		width={713} 
-		height={300}
-		class="absolute inset-0 top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 z-[-1] w-[100vw] pointer-events-none mix-blend-screen"
-		aria-hidden="true"
-    />  
+	<div 
+      class:list={[
+        "relative mb-20 transition-all duration-2500 ease-out",
+        isRich ? "demo03-fade-target transform translate-y-20 opacity-0" : ""
+      ]}
+      style={isRich ? `will-change: transform; transition-delay: 0.1s;` : undefined}
+    >
+      <Image 
+        src={lineBright} 
+        alt="サブタイトル背景" 
+        width={713} 
+        height={245}
+        class="absolute inset-0 top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 z-[-1] w-[100vw] pointer-events-none backface-hidden"
+        style="will-change: transform; transform: translateZ(0);"
+        aria-hidden="true"
+      />  
       <h2 class="txt-luster [text-shadow:_0_0_30px_white] text-3xl text-center md:text-6xl font-serif text-clr-main-1 sm:tracking-widest mb-6">
         {title}
       </h2>
+    </div>  
 
-    </div>
+
 	<!-- <p class="text-clr-bl-1 text-lg max-w-lg mx-auto leading-relaxed bg-white/50 backdrop-blur-md border border-white/10 p-6 mb-16 md:p-8 rounded-3xl shadow-2xl">{description}</p> -->
 
     {/* PC時はグリッドで等間隔に配置し、線を中央に通す */}
@@ -48,7 +64,16 @@ import DetailButton from '@/components/common/DetailButton.astro';
         const romanNumbers = ["I", "II", "III", "IV"];
         
         return (
-          <div class="relative flex flex-col items-center text-center group z-10">
+
+		<div 
+            class:list={[
+              "relative flex flex-col items-center text-center group z-10 transition-all duration-1200 ease-out",
+              isRich ? "demo03-fade-target transform translate-y-20 opacity-0" : ""
+            ]}
+            style={isRich ? `transition-delay: ${index * 0.2}s;` : undefined}
+          >
+
+
             {/* ステップ番号：背景色の指定により線が背後を通るようにする */}
             <div class="w-16 h-16 border border-clr-main-1 flex items-center justify-center text-2xl font-serif text-clr-wh-1 mb-6 bg-clr-base-1 group-hover:bg-clr-main-1 transition-all duration-500">
               {romanNumbers[index] || item.step}

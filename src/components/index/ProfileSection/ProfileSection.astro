@@ -18,32 +18,52 @@ interface Props {
   showDetailButton?: boolean;
   detailUrl?: string;
   isSinglePage?: boolean;
+  variant?: 'default' | 'rich';
 }
 
-const { showDetailButton = false, detailUrl = '#' } = Astro.props;
-const { isSinglePage = true } = Astro.props;
+const { 
+  showDetailButton = false, 
+  detailUrl = '#', 
+  isSinglePage = true,
+  variant = 'default' 
+} = Astro.props;
+
+const isRich = variant === 'rich';
+
 import DetailButton from '@/components/common/DetailButton.astro';
 ---
 
 <section id="profile" class="section-margin-y py-24 md:py-32 text-clr-wh-1">
   <SectionContainer>
-    <div class="relative mb-20">
-	<Image 
-		src={lineBright} 
-		alt="サブタイトル背景" 
-		width={713} 
-		height={300}
-		class="absolute inset-0 top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 z-[-1] w-[100vw] pointer-events-none mix-blend-screen"
-		aria-hidden="true"
-    />  
+	<div 
+      class:list={[
+        "relative mb-20 transition-all duration-2500 ease-out",
+        isRich ? "demo03-fade-target transform translate-y-20 opacity-0" : ""
+      ]}
+      style={isRich ? `will-change: transform; transition-delay: 0.1s;` : undefined}
+    >
+      <Image 
+        src={lineBright} 
+        alt="サブタイトル背景" 
+        width={713} 
+        height={245}
+        class="absolute inset-0 top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 z-[-1] w-[100vw] pointer-events-none backface-hidden"
+        style="will-change: transform; transform: translateZ(0);"
+        aria-hidden="true"
+      />  
       <h2 class="txt-luster [text-shadow:_0_0_30px_white] text-3xl text-center md:text-6xl font-serif text-clr-main-1 sm:tracking-widest mb-6">
         {title}
       </h2>
-
-    </div>
+    </div>  
 
     
-    <div class="flex flex-col md:flex-row items-start gap-16 max-w-5xl mx-auto">
+    <div
+		class:list={[
+			"flex flex-col md:flex-row items-start gap-16 max-w-5xl mx-auto transition-all duration-2500 ease-out",
+			isRich ? "demo03-fade-target transform translate-y-20 opacity-0" : ""
+		]}
+        style={isRich ? `will-change: transform; transition-delay: 0.1s;` : undefined}
+	>
       
       {/* 写真エリア：角を活かした重厚なスタイル */}
       <div class="relative flex-shrink-0 mx-auto md:mx-0">
