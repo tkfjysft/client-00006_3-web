@@ -194,30 +194,41 @@ const isRich = variant === 'rich'; // ← 判定用
 </script>
 
 <!-- demo03（isRich）のときだけ、スムーズスクロール（Lenis）を有効化 -->
-    {isRich && (
-      <>
-        <!-- CDNからLenisを読み込み -->
-        <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
-        <script is:inline>
-          window.addEventListener('DOMContentLoaded', () => {
-            if (typeof Lenis !== 'undefined') {
-              const lenis = new Lenis({
-                duration: 1.2, // スクロールの持続時間（お好みで調整可能）
-                easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // 滑らかなイージング
-                smoothWheel: true,
-              });
+{isRich && (
+  <>
+    <!-- CDNからLenisを読み込み -->
+    <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+    <script is:inline>
+      window.addEventListener('DOMContentLoaded', () => {
+        // ─── Chrome判定（※EdgeもChromium系のため同様に安全側へ倒す場合を含みます） ───
+        const ua = window.navigator.userAgent.toLowerCase();
+        const isChrome = ua.indexOf('chrome') !== -1 && ua.indexOf('edge') === -1 && ua.indexOf('opr') === -1;
 
-              function raf(time) {
-                lenis.raf(time);
-                requestAnimationFrame(raf);
-              }
+        // Chromeの場合はLenisを初期化せず、完全にネイティブのスクロールに任せる
+        if (isChrome) {
+          console.log('Chromeのため、Lenisをバイパスしてネイティブスクロールを使用します。');
+          return;
+        }
 
-              requestAnimationFrame(raf);
-            }
+        // Chrome以外（Safari、Firefoxなど）ならLenisを起動
+        if (typeof Lenis !== 'undefined') {
+          const lenis = new Lenis({
+            duration: 1.2,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            smoothWheel: true,
           });
-        </script>
-      </>
-    )}
+
+          function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+          }
+
+          requestAnimationFrame(raf);
+        }
+      });
+    </script>
+  </>
+)}
 
   </body>
 </html>

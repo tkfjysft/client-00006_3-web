@@ -87,7 +87,9 @@ export default function PageIntro() {
             opacity: 0,
             transition: { duration: 1.0, ease: "easeInOut" }
           }}
-          className="fixed inset-0 z-[9999] flex items-center justify-center bg-[#0f172a] overflow-hidden pointer-events-none"
+// 【対策】Chromeのホイールイベントのスタックを防ぐため、touch-actionやuser-selectも切る
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-[#0f172a] overflow-hidden pointer-events-none select-none"
+          style={{ touchAction: 'none' }}
         >
           {isFirstVisit && (
             <>
