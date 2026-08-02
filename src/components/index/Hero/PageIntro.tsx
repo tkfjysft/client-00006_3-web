@@ -15,30 +15,20 @@ import ciLogo from '@/assets/images/logo_ci.avif';
 
 const crystalImages = [crystal1, crystal2, crystal3, crystal4, crystal5, crystal6, crystal7];
 
-const TOTAL_PARTICLES = 55;
-
-const items = Array.from({ length: TOTAL_PARTICLES }).map((_, i) => {
-  const randomImage = crystalImages[Math.floor(Math.random() * crystalImages.length)];
-  const angle = (i / TOTAL_PARTICLES) * Math.PI * 2 + (Math.random() * 0.3);
-  const distance = 200 + Math.random() * 550; 
-  
-  return {
-    id: i,
-    image: randomImage,
-    targetX: Math.cos(angle) * distance,
-    targetY: Math.sin(angle) * distance,
-    size: 32 + Math.random() * 63,
-    duration: 2.8 + Math.random() * 1.0,
-    delay: i * 0.02,
-    initialRotation: Math.random() * 360,
-  };
-});
-
 export default function PageIntro() {
   const [isLoading, setIsLoading] = useState(true);
   const [isFirstVisit, setIsFirstVisit] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
+    setIsMounted(true);
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
     const hasVisited = sessionStorage.getItem('has_visited_hero_intro');
 
     if (hasVisited) {
@@ -46,7 +36,10 @@ export default function PageIntro() {
       const timer = setTimeout(() => {
         setIsLoading(false);
       }, 300);
-      return () => clearTimeout(timer);
+      return () => {
+        setIsLoading(false);
+        window.removeEventListener('resize', checkMobile);
+      };
     } else {
       sessionStorage.setItem('has_visited_hero_intro', 'true');
       setIsFirstVisit(true);
@@ -55,9 +48,35 @@ export default function PageIntro() {
         setIsLoading(false);
       }, 3500);
 
-      return () => clearTimeout(timer);
+      return () => {
+        setIsLoading(false);
+        window.removeEventListener('resize', checkMobile);
+      };
     }
   }, []);
+
+  const currentIsMobile = isMounted ? isMobile : false;
+
+  // 【さらに軽量化】スマホなら思い切って 15個、PCなら豪華な 55個
+  const particleCount = currentIsMobile ? 15 : 55;
+
+  const items = Array.from({ length: particleCount }).map((_, i) => {
+    const randomImage = crystalImages[Math.floor(Math.random() * crystalImages.length)];
+    const angle = (i / particleCount) * Math.PI * 2 + (Math.random() * 0.3);
+    const distance = currentIsMobile ? (140 + Math.random() * 200) : (200 + Math.random() * 550); 
+    
+    return {
+      id: i,
+      image: randomImage,
+      targetX: Math.cos(angle) * distance,
+      targetY: Math.sin(angle) * distance,
+      // スマホは数が少ない分、サイズを少し大きめにして寂しさをカバー
+      size: currentIsMobile ? (32 + Math.random() * 32) : (32 + Math.random() * 63),
+      duration: 2.8 + Math.random() * 1.0,
+      delay: i * 0.03, // わずかに遅延を広げてバランス調整
+      initialRotation: currentIsMobile ? 0 : (Math.random() * 360),
+    };
+  });
 
   return (
     <AnimatePresence>
@@ -73,12 +92,14 @@ export default function PageIntro() {
           {isFirstVisit && (
             <>
               {/* 中央の光のコア */}
-              <motion.div
-                initial={{ scale: 0, opacity: 0 }}
-                animate={{ scale: [0, 3.0, 6], opacity: [0, 0.8, 0] }}
-                transition={{ duration: 3.0, ease: "easeOut" }}
-                className="absolute w-64 h-64 rounded-full bg-gradient-to-r from-[#aac3fd]/40 via-[#e3d85c]/40 to-transparent blur-3xl"
-              />
+              {!currentIsMobile && (
+                <motion.div
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: [0, 3.0, 6], opacity: [0, 0.8, 0] }}
+                  transition={{ duration: 3.0, ease: "easeOut" }}
+                  className="absolute w-64 h-64 rounded-full bg-gradient-to-r from-[#aac3fd]/40 via-[#e3d85c]/40 to-transparent blur-3xl"
+                />
+              )}
 
               <div className="relative flex items-center justify-center">
                 {items.map((item) => (
@@ -89,14 +110,14 @@ export default function PageIntro() {
                       y: 0,
                       scale: 0,
                       opacity: 0,
-                      rotate: item.initialRotation,
+                      rotate: currentIsMobile ? 0 : item.initialRotation,
                     }}
                     animate={{
                       x: item.targetX,
                       y: item.targetY,
                       scale: [0, 1.2, 1],
                       opacity: [0, 1, 0.9, 0],
-                      rotate: item.initialRotation + 120,
+                      rotate: currentIsMobile ? 0 : (item.initialRotation + 120),
                     }}
                     transition={{
                       duration: item.duration,
@@ -112,25 +133,29 @@ export default function PageIntro() {
                     <img
                       src={item.image.src}
                       alt="Crystal Particle"
-                      className="w-full h-full object-contain filter drop-shadow-[0_0_14px_rgba(170,195,253,0.7)]"
+                      className={`w-full h-full object-contain ${
+                        currentIsMobile 
+                          ? '' 
+                          : 'filter drop-shadow-[0_0_14px_rgba(170,195,253,0.7)]'
+                      }`}
                     />
                   </motion.div>
                 ))}
               </div>
 
-              {/* 中央のCIロゴ：無駄な揺れをなくし、素直に拡大して消える動き */}
+              {/* 中央のCIロゴ */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ 
                   opacity: [0, 1, 1, 0], 
-                  scale: [0.9, 1.0, 1.0, 1.0], // 0.9から1.0へ素直に拡大してそのままキープ
+                  scale: [0.9, 1.0, 1.0, 1.0], 
                 }}
                 transition={{ 
                   duration: 3.0, 
                   times: [0, 0.25, 0.75, 1], 
                   ease: "easeOut" 
                 }}
-                className="absolute z-10 flex items-center justify-center px-4 w-full max-w-[500px]"
+                className="absolute z-10 flex items-center justify-center px-4 w-full max-w-[320px] md:max-w-[500px]"
               >
                 <img 
                   src={ciLogo.src} 
