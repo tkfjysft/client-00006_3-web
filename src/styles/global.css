@@ -200,3 +200,38 @@ text-shadow:
 .animate-fade-in {
   animation: fadeIn 1.2s ease-in-out forwards;
 }
+
+
+
+
+
+
+
+
+
+
+
+@keyframes crystalFloat {
+  0% {
+    transform: translate(0, 0) scale(0) rotate(0deg);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+    scale: 1.2;
+  }
+  100% {
+    transform: translate(var(--tx), var(--ty)) scale(1) rotate(var(--trotate));
+    opacity: 0;
+  }
+}
+
+.animate-crystal-mobile {
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  animation-name: crystalFloat;
+  animation-duration: var(--tduration);
+  animation-timing-function: cubic-bezier(0.25, 1, 0.5, 1);
+  animation-fill-mode: forwards;
+  transform-style: preserve-3d;
+}

@@ -11,9 +11,15 @@ import crystal5 from '@/assets/images/crystal_5.avif';
 import crystal6 from '@/assets/images/crystal_6.avif';
 import crystal7 from '@/assets/images/crystal_7.avif';
 
+import crystalSm2 from '@/assets/images/crystal_2_sm.avif';
+import crystalSm3 from '@/assets/images/crystal_3_sm.avif';
+import crystalSm5 from '@/assets/images/crystal_5_sm.avif';
+import crystalSm6 from '@/assets/images/crystal_6_sm.avif';
+
 import ciLogo from '@/assets/images/logo_ci.avif';
 
-const crystalImages = [crystal1, crystal2, crystal3, crystal4, crystal5, crystal6, crystal7];
+const pcCrystalImages = [crystal1, crystal2, crystal3, crystal4, crystal5, crystal6, crystal7];
+const mobileCrystalImages = [crystalSm2, crystalSm3, crystalSm5, crystalSm6];
 
 export default function PageIntro() {
   const [isLoading, setIsLoading] = useState(true);
@@ -57,11 +63,11 @@ export default function PageIntro() {
 
   const currentIsMobile = isMounted ? isMobile : false;
 
-  // 【さらに軽量化】スマホなら思い切って 15個、PCなら豪華な 55個
   const particleCount = currentIsMobile ? 15 : 55;
+  const activeImages = currentIsMobile ? mobileCrystalImages : pcCrystalImages;
 
   const items = Array.from({ length: particleCount }).map((_, i) => {
-    const randomImage = crystalImages[Math.floor(Math.random() * crystalImages.length)];
+    const randomImage = activeImages[Math.floor(Math.random() * activeImages.length)];
     const angle = (i / particleCount) * Math.PI * 2 + (Math.random() * 0.3);
     const distance = currentIsMobile ? (140 + Math.random() * 200) : (200 + Math.random() * 550); 
     
@@ -70,10 +76,9 @@ export default function PageIntro() {
       image: randomImage,
       targetX: Math.cos(angle) * distance,
       targetY: Math.sin(angle) * distance,
-      // スマホは数が少ない分、サイズを少し大きめにして寂しさをカバー
       size: currentIsMobile ? (32 + Math.random() * 32) : (32 + Math.random() * 63),
       duration: 2.8 + Math.random() * 1.0,
-      delay: i * 0.03, // わずかに遅延を広げてバランス調整
+      delay: i * 0.03,
       initialRotation: currentIsMobile ? 0 : (Math.random() * 360),
     };
   });
@@ -87,13 +92,12 @@ export default function PageIntro() {
             opacity: 0,
             transition: { duration: 1.0, ease: "easeInOut" }
           }}
-// 【対策】Chromeのホイールイベントのスタックを防ぐため、touch-actionやuser-selectも切る
           className="fixed inset-0 z-[9999] flex items-center justify-center bg-[#0f172a] overflow-hidden pointer-events-none select-none"
           style={{ touchAction: 'none' }}
         >
           {isFirstVisit && (
             <>
-              {/* 中央の光のコア */}
+              {/* 中央の光のコア（PCのみ） */}
               {!currentIsMobile && (
                 <motion.div
                   initial={{ scale: 0, opacity: 0 }}
@@ -104,45 +108,70 @@ export default function PageIntro() {
               )}
 
               <div className="relative flex items-center justify-center">
-                {items.map((item) => (
-                  <motion.div
-                    key={item.id}
-                    initial={{
-                      x: 0,
-                      y: 0,
-                      scale: 0,
-                      opacity: 0,
-                      rotate: currentIsMobile ? 0 : item.initialRotation,
-                    }}
-                    animate={{
-                      x: item.targetX,
-                      y: item.targetY,
-                      scale: [0, 1.2, 1],
-                      opacity: [0, 1, 0.9, 0],
-                      rotate: currentIsMobile ? 0 : (item.initialRotation + 120),
-                    }}
-                    transition={{
-                      duration: item.duration,
-                      delay: item.delay,
-                      ease: [0.25, 1, 0.5, 1], 
-                    }}
-                    style={{
-                      position: 'absolute',
-                      width: `${item.size}px`,
-                      height: `${item.size}px`,
-                    }}
-                  >
-                    <img
-                      src={item.image.src}
-                      alt="Crystal Particle"
-                      className={`w-full h-full object-contain ${
-                        currentIsMobile 
-                          ? '' 
-                          : 'filter drop-shadow-[0_0_14px_rgba(170,195,253,0.7)]'
-                      }`}
-                    />
-                  </motion.div>
-                ))}
+                {items.map((item) => {
+                  // スマホの場合は軽量なCSSアニメーション要素をレンダリング
+                  if (currentIsMobile) {
+                    return (
+                      <div
+                        key={item.id}
+                        className="absolute animate-crystal-mobile"
+                        style={{
+                          width: `${item.size}px`,
+                          height: `${item.size}px`,
+                          '--tx': `${item.targetX}px`,
+                          '--ty': `${item.targetY}px`,
+                          '--trotate': `0deg`,
+                          '--tduration': `${item.duration}s`,
+                          animationDelay: `${item.delay}s`,
+                          transform: `translate(0, 0) scale(0) rotate(0deg)`,
+                        } as React.CSSProperties}
+                      >
+                        <img
+                          src={item.image.src}
+                          alt="Crystal Particle"
+                          className="w-full h-full object-contain"
+                        />
+                      </div>
+                    );
+                  }
+
+                  // PCの場合はこれまで通りのFramer Motionを維持
+                  return (
+                    <motion.div
+                      key={item.id}
+                      initial={{
+                        x: 0,
+                        y: 0,
+                        scale: 0,
+                        opacity: 0,
+                        rotate: item.initialRotation,
+                      }}
+                      animate={{
+                        x: item.targetX,
+                        y: item.targetY,
+                        scale: [0, 1.2, 1],
+                        opacity: [0, 1, 0.9, 0],
+                        rotate: item.initialRotation + 120,
+                      }}
+                      transition={{
+                        duration: item.duration,
+                        delay: item.delay,
+                        ease: [0.25, 1, 0.5, 1], 
+                      }}
+                      style={{
+                        position: 'absolute',
+                        width: `${item.size}px`,
+                        height: `${item.size}px`,
+                      }}
+                    >
+                      <img
+                        src={item.image.src}
+                        alt="Crystal Particle"
+                        className="w-full h-full object-contain filter drop-shadow-[0_0_14px_rgba(170,195,253,0.7)]"
+                      />
+                    </motion.div>
+                  );
+                })}
               </div>
 
               {/* 中央のCIロゴ */}
