@@ -1,0 +1,125 @@
+---
+import { resolveUrl } from '@/utils/pathHelper';
+
+interface Props {
+  navItems: Array<{ url: string; text: string }>;
+  currentUrl: string;
+}
+
+const { navItems, currentUrl } = Astro.props;
+---
+
+<div class="lg:hidden">
+  {/* ハンバーガーボタン */}
+  <button 
+    id="drawer-open" 
+    class="relative z-50 p-2 text-clr-main-1 cursor-pointer focus:outline-none"
+    aria-label="メニューを開く"
+  >
+    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+    style="filter: drop-shadow(0 0 3px #fff) drop-shadow(0 0 4px #fff);"
+    >
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"></path>
+    </svg>
+  </button>
+
+  {/* ドロワー背景のオーバーレイ（暗くなる部分） */}
+  <div 
+    id="drawer-overlay" 
+    class="fixed inset-0 bg-black/50 z-40 opacity-0 pointer-events-none transition-opacity duration-300 backdrop-blur-sm"
+  ></div>
+
+  {/* ドロワーメニュー本体 */}
+  <div 
+    id="drawer-menu" 
+    class="fixed top-0 right-0 w-80 max-w-[80vw] h-full bg-clr-wh-1 border-l border-clr-base-1 p-8 z-50 shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col"
+  >
+    {/* 閉じるボタン（×） */}
+    <div class="flex justify-end mb-8">
+      <button 
+        id="drawer-close" 
+        class="p-2 text-clr-bl-1 hover:text-clr-main-1 transition-colors focus:outline-none"
+        aria-label="メニューを閉じる"
+      >
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+
+    {/* メニューリスト */}
+    <nav class="flex-1 overflow-y-auto">
+      <ul class="flex flex-col gap-6">
+        {navItems.map((item) => (
+          <li>
+            <a 
+              href={resolveUrl(item.url, currentUrl)} 
+              class="block text-xl text-clr-bl-1 font-serif hover:text-clr-main-1 transition-colors border-b border-clr-base-1/20 pb-4"
+            >
+              {item.text}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+</div>
+
+{/* クライアントサイドでの開閉制御スクリプト */}
+<script>
+  function setupDrawer() {
+    const openBtn = document.getElementById('drawer-open');
+    const closeBtn = document.getElementById('drawer-close');
+    const overlay = document.getElementById('drawer-overlay');
+    const menu = document.getElementById('drawer-menu');
+
+    if (!openBtn || !closeBtn || !overlay || !menu) return;
+
+    // スクロール位置を保持するための変数
+    let scrollY = 0;
+
+    function openDrawer() {
+      // 現在のスクロール位置を記録
+      scrollY = window.scrollY;
+
+      // メニューとオーバーレイを表示
+      menu.classList.remove('translate-x-full');
+      overlay.classList.remove('opacity-0', 'pointer-events-none');
+
+      // 【重要】スマホやPCで背景が絶対に動かないようにボディを固定
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.left = '0';
+      document.body.style.right = '0';
+      document.body.style.width = '100%';
+    }
+
+    function closeDrawer() {
+      // メニューとオーバーレイを非表示
+      menu.classList.add('translate-x-full');
+      overlay.classList.add('opacity-0', 'pointer-events-none');
+
+      // ボディの固定を解除し、元のスクロール位置に戻す
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.left = '';
+      document.body.style.right = '';
+      document.body.style.width = '';
+      window.scrollTo(0, scrollY);
+    }
+
+    openBtn.addEventListener('click', openDrawer);
+    closeBtn.addEventListener('click', closeDrawer);
+    overlay.addEventListener('click', closeDrawer);
+
+    // 画面幅がPCサイズ（lg以上）になったら強制的に閉じる
+    window.addEventListener('resize', () => {
+      if (window.innerWidth >= 1024) {
+        closeDrawer();
+      }
+    });
+  }
+
+  setupDrawer();
+  document.addEventListener('astro:page-load', setupDrawer);
+</script>
