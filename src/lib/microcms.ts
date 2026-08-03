@@ -27,7 +27,7 @@ export type Blog = {
   revisedAt: string;
   title: string;
   content: string;
-  date?: string; 
+  pubDate?: string; 
   eyecatch?: string;
   slug?: string; // すでに使っているslugも追加しておくと安心です
   category?: Category; // 追加：カテゴリ情報

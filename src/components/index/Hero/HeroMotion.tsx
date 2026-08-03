@@ -100,7 +100,7 @@ export default function HeroMotion({
           >
             <a 
               href={contactUrl} 
-              className="inline-flex items-center bg-clr-main-1/80 hover:bg-white/30 text-white border border-white/40 px-10 py-4 rounded-full shadow-lg transition-all hover:-translate-y-1 hover:scale-105 duration-300"
+              className="inline-flex items-center bg-clr-main-1/80 hover:bg-white/70 text-clr-wh-1 hover:text-clr-main-1 border border-white/40 px-10 py-4 rounded-full shadow-lg transition-all hover:-translate-y-1 hover:scale-105 duration-300"
             >
               <span className="font-semibold tracking-widest">{buttonText}</span>
             </a>

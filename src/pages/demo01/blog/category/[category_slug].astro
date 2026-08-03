@@ -1,86 +1,25 @@
 ---
-import { getBlogs, getCategories, type Category, type Blog } from "@/lib/microcms.ts";
-import { resolveUrl } from '@/utils/pathHelper';
-import Layout from '@/layouts/Layout.astro';
-import SectionContainer from '@/components/common/SectionContainer.astro';
-import HeroSection from '@/components/common_lower_layer/HeroSection.astro';
+import { getBlogs, getCategories } from "@/lib/microcms.ts";
+import CategoryDetailTemplate from "@/components/templates/LowerTemplateBlogCategories.astro";
 
 const currentUrl = Astro.url.pathname;
 
-// ① ビルド時に「どのカテゴリのページを作るべきか」をAstroに教える
 export async function getStaticPaths() {
   const response = await getCategories();
   
   return response.contents.map((category) => ({
     params: { category_slug: category.slug },
-    props: { category }, // カテゴリのオブジェクトも一緒に渡す
+    props: { category },
   }));
 }
 
-// ② URLから category_slug を受け取る
-const { category_slug } = Astro.params;
 const { category } = Astro.props;
 
-// ③ そのカテゴリに属する記事だけをmicroCMSから取得する
 const response = await getBlogs({
   filters: `category[equals]${category.id}`,
-  fields: ["id", "title", "publishedAt", "slug", "category"],
+  fields: ["id", "title", "pubDate", "slug", "category"],
 });
 const posts = response.contents;
 ---
 
-<Layout title={`${category.name}の記事一覧`}>
-  <HeroSection title={`${category.name} カテゴリの記事`} subtitle="ブログ" txtSizeName="text-2xl md:text-3xl" />
-  
-  <div class="wrap">
-    <section class="py-20 bg-gradient-to-b from-clr-wh-1/60 via-clr-wh-1/40 to-clr-wh-1/10 text-clr-wh-1 min-h-screen">
-      <SectionContainer>
-        
-        <!-- 一覧に戻るリンク -->
-        <div class="mb-8">
-          <a 
-            href={resolveUrl('/blog/', currentUrl)}
-            class="inline-flex items-center gap-2 text-base text-clr-main-1 hover:text-clr-main-1/80 transition-colors duration-200 group"
-          >
-            <span class="transform group-hover:-translate-x-1 transition-transform duration-200">&lt;</span>
-            <span>ブログ一覧へ戻る</span>
-          </a>
-        </div>
-
-        <!-- 記事一覧のループ -->
-        <div class="grid gap-6">
-          {posts.length === 0 ? (
-            <p>このカテゴリの記事はまだありません。</p>
-          ) : (
-            posts.map((post) => {
-              const postSlug = post.slug || post.id;
-              return (
-                <article class="p-6 bg-white/50 rounded-lg shadow-sm">
-                  <time datetime={post.publishedAt} class="text-sm text-gray-500 mr-2">
-                    {new Date(post.publishedAt).toLocaleDateString('ja-JP', {
-                      year: 'numeric',
-                      month: '2-digit',
-                      day: '2-digit'
-                    })}
-                  </time>
-
-                  {post.category && (
-                    <span class="inline-block px-2.5 py-0.5 bg-clr-main-1/10 text-clr-main-1 text-xs rounded-md font-bold mb-2">
-                      {post.category.name}
-                    </span>
-                  )}
-                  <h2 class="text-xl font-bold mb-2">
-                    <a href={resolveUrl(`/blog/${postSlug}/`, currentUrl)} class="hover:text-clr-main-1 transition-colors">
-                      {post.title}
-                    </a>
-                  </h2>
-                </article>
-              );
-            })
-          )}
-        </div>
-
-      </SectionContainer>
-    </section>
-  </div>
-</Layout>
+<CategoryDetailTemplate category={category} posts={posts} currentUrl={currentUrl} />

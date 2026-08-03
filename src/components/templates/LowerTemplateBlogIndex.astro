@@ -10,7 +10,7 @@ import { resolveUrl } from '@/utils/pathHelper';
 
 const currentUrl = Astro.url.pathname;
 
-const response = await getBlogs({ fields: ["id", "title", "publishedAt", "slug", "category"] });
+const response = await getBlogs({ fields: ["id", "title", "pubDate", "slug", "category"] });
 const posts = response.contents;
 
 	interface Props {
@@ -65,8 +65,8 @@ const posts = response.contents;
 	  
 
 					<div class="txt-luster flex items-center gap-2 text-base font-bold text-clr-main-1 shrink-0">
-                      <time datetime={post.publishedAt}>
-                        {new Date(post.publishedAt).toLocaleDateString('ja-JP', {
+                      <time datetime={post.pubDate}>
+                        {new Date(post.pubDate).toLocaleDateString('ja-JP', {
                           year: 'numeric',
                           month: '2-digit',
                           day: '2-digit'

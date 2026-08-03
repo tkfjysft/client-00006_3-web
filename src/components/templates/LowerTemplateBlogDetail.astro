@@ -1,0 +1,150 @@
+---
+import { resolveUrl } from '@/utils/pathHelper';
+import Layout from '@/layouts/Layout.astro';
+import SectionContainer from '@/components/common/SectionContainer.astro';
+import HeroSection from '@/components/common_lower_layer/HeroSection.astro';
+import type { Category, Blog } from '@/lib/microcms.ts';
+
+	interface Props {
+		category?: Category;
+  		post: Blog;
+  		currentUrl: string;
+		variant?: 'default' | 'rich'; // ← 追加：リッチ版の切り替え用プロパティ
+	}
+
+	const { category, post, currentUrl, variant = 'default' } = Astro.props;
+
+	const isRich = variant === 'rich';
+
+const safeContent = post.content
+  ? post.content.replace(/<h1(\s|>)/gi, '<h2$1').replace(/<\/h1>/gi, '</h2>')
+  : '';
+---
+<Layout title={post.title} variant={variant}>
+    <HeroSection title={post.title} subtitle="ブログ" txtSizeName="text-xl md:text-2xl" variant={variant} />
+    <div class="wrap ">
+<section class="py-20 bg-gradient-to-b from-clr-wh-1/60 via-clr-wh-1/40 to-clr-wh-1/10 text-clr-wh-1 min-h-screen">
+    <SectionContainer>
+        
+        <!-- 一覧に戻るリンク -->
+        <div
+			class:list={[
+				"mb-1 transition-all duration-2001 ease-out",
+				isRich ? "demo03-fade-target transform translate-y-20 opacity-0" : ""
+			]}
+			style={isRich ? `will-change: transform; transition-delay: 0.1s;` : undefined}
+		>
+          <a 
+            href={resolveUrl('/blog/', currentUrl)}
+            class="inline-flex items-center gap-2 text-base text-clr-main-1 hover:text-clr-main-1/80 transition-colors duration-200 group"
+          >
+            <span class="transform group-hover:-translate-x-1 transition-transform duration-200">&lt;</span>
+            <span>記事一覧へ戻る</span>
+          </a>
+        </div>
+
+        <!-- 記事ヘッダー（タイトル・公開日） -->
+        <div
+			class:list={[
+				"mb-1 pb-1 transition-all duration-2001 ease-out",
+				isRich ? "demo03-fade-target transform translate-y-20 opacity-0" : ""
+			]}
+			style={isRich ? `will-change: transform; transition-delay: 0.1s;` : undefined}
+		>
+          <div class="flex items-center gap-2 text-base text-clr-main-1">
+            <span class="font-bold">公開日:</span>
+            <time datetime={post.pubDate}>
+              {new Date(post.pubDate).toLocaleDateString('ja-JP', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+              })}
+            </time>
+          </div>
+        </div>
+
+        <!-- カテゴリ名の表示 -->
+        {post.category && (
+          <div class=""
+			class:list={[
+				"mb-4 transition-all duration-2001 ease-out",
+				isRich ? "demo03-fade-target transform translate-y-20 opacity-0" : ""
+			]}
+			style={isRich ? `will-change: transform; transition-delay: 0.1s;` : undefined}
+		  >
+            <a 
+              href={resolveUrl(`/blog/category/${post.category.slug}/`, currentUrl)}
+              class="inline-block px-3 py-1 bg-clr-main-1/10 text-clr-main-1 text-sm rounded-md font-bold hover:bg-clr-main-1/20 transition-colors"
+            >
+              {post.category.name}
+            </a>
+          </div>
+        )}
+
+        <!-- アイキャッチ画像 -->
+        {post.eyecatch && (
+          <div
+			class:list={[
+				"flex justify-center mx-auto mb-12 overflow-hidden transition-all duration-2001 ease-out",
+				isRich ? "demo03-fade-target transform translate-y-20 opacity-0" : ""
+			]}
+			style={isRich ? `will-change: transform; transition-delay: 0.1s;` : undefined}
+		  >
+            <img 
+              src={post.eyecatch.url} 
+              alt="" 
+              class="w-full rounded-3xl shadow-xl max-w-[640px] h-auto object-cover max-h-[450px]"
+            />
+          </div>
+        )}
+
+        <!-- 本文エリア -->
+        <div
+			class:list={[
+				"bg-clr-wh-1/50 py-4 px-6 rounded-3xl shadow-xl post-content text-base md:text-lg text-clr-wh-1/90 leading-relaxed space-y-6 transition-all duration-2001 ease-out",
+				isRich ? "demo03-fade-target transform translate-y-20 opacity-0" : ""
+			]}
+			style={isRich ? `will-change: transform; transition-delay: 0.1s;` : undefined}
+		>
+          <div class="blog-content txt-luster" set:html={safeContent} />
+        </div>
+
+        <!-- 一覧に戻るリンク -->
+        <div
+			class:list={[
+				"mt-10 transition-all duration-2001 ease-out",
+				isRich ? "demo03-fade-target transform translate-y-20 opacity-0" : ""
+			]}
+			style={isRich ? `will-change: transform; transition-delay: 0.1s;` : undefined}
+		>
+          <a 
+            href={resolveUrl('/blog/', currentUrl)}
+            class="inline-flex items-center gap-2 text-base text-clr-main-1 hover:text-clr-main-1/80 transition-colors duration-200 group"
+          >
+            <span class="transform group-hover:-translate-x-1 transition-transform duration-200">&lt;</span>
+            <span>記事一覧へ戻る</span>
+          </a>
+        </div>
+
+    </SectionContainer>
+  </section>
+  </div>
+</Layout>
+
+<style>
+    .blog-content :global(*) { color: #303c4f; }
+    .blog-content :global(h2) {
+        font-size: 1.5rem; font-weight: bold; font-family: ui-serif, Georgia, serif;
+        color: #4a423d; margin-top: 2rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid #ece8e1;
+    }
+    .blog-content :global(h3) {
+        font-size: 1.25rem; font-weight: bold; font-family: ui-serif, Georgia, serif;
+        color: #4a423d; margin-top: 1.5rem; margin-bottom: 0.75rem;
+    }
+    .blog-content :global(p) { margin-bottom: 1.25rem; line-height: 1.8; }
+    .blog-content :global(ul) { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1.25rem; }
+    .blog-content :global(ol) { list-style-type: decimal; padding-left: 1.5rem; margin-bottom: 1.25rem; }
+    .blog-content :global(li) { margin-bottom: 0.5rem; }
+    .blog-content :global(a) { color: #0650d9; text-decoration: underline; }
+    .blog-content :global(a:hover) { color: #6692e4; text-decoration: underline; }
+</style>
