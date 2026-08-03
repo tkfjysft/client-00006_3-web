@@ -7,13 +7,17 @@
 	import TestimonialSection from '@/components/index/TestimonialSection/TestimonialSection.astro';
 	import FaqSection from '@/components/index/FaqSection/FaqSection.astro';
 	import ProfileSection from '@/components/index/ProfileSection/ProfileSection.astro';
+	import BlogListSection from '@/components/index/BlogListSection/BlogListSection.astro';
+
 	import { resolveUrl } from '@/utils/pathHelper';
 	import { SITE_URLS } from '@/data/site';
 	import FramerMotionSection from '@/components/FramerMotionSection.tsx';
 
+	import { getBlogs } from '@/lib/microcms'; 
+
 	interface Props {
-	isSinglePage?: boolean; // ★ 単一ページかどうかのフラグに変更
-	variant?: 'default' | 'rich'; // ← 追加：リッチ版の切り替え用プロパティ
+		isSinglePage?: boolean; // ★ 単一ページかどうかのフラグに変更
+		variant?: 'default' | 'rich'; // ← 追加：リッチ版の切り替え用プロパティ
 	}
 
 	const { isSinglePage = true, variant = 'default' } = Astro.props; // デフォルトは単一ページなど
@@ -22,6 +26,18 @@
 	// 「単一ページでなければ（＝複数ページやプレミアムなら）ボタンを表示する」という判定
 	const showDetailButton = !isSinglePage;
 	const isRich = variant === 'rich';
+
+	/* ▼ 追加：microCMSから最新の記事をいくつか取得する（例: 最新3件） */
+		let posts = [];
+		try {
+		const response = await getBlogs({
+			limit: 6,
+			fields: ['id', 'title', 'pubDate', 'slug', 'category'],
+		});
+		posts = response.contents || [];
+		} catch (error) {
+		console.error("ブログ記事の取得に失敗しました:", error);
+		}
 	---
 
 	<Layout title="トップページ" variant={variant}>
@@ -67,6 +83,13 @@
 		isSinglePage={!showDetailButton}
 		showDetailButton={showDetailButton}
 		detailUrl={resolveUrl(SITE_URLS.PROFILE, currentPath)}
+		variant={variant}
+	/>
+
+	<BlogListSection
+		posts={posts}
+		currentUrl={currentPath}
+		detailUrl={resolveUrl(SITE_URLS.BLOG, currentPath)}
 		variant={variant}
 	/>
 

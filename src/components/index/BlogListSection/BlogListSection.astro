@@ -1,0 +1,136 @@
+---
+import SectionContainer from '@/components/common/SectionContainer.astro';
+import { resolveUrl } from '@/utils/pathHelper';
+import { Image } from 'astro:assets';
+import lineBright from '@/assets/images/line_bright.avif';
+
+import blogListData from '@/components/index/BlogListSection/blogList.json';
+if (!blogListData) throw new Error("blogList.jsonが見つかりません");
+
+const { title, description } = blogListData;
+
+interface Props {
+  detailUrl?: string;
+  posts: any[];
+  currentUrl?: string;
+  variant?: 'default' | 'rich';
+}
+
+const {
+  detailUrl = '#', 
+  posts = [], 
+  currentUrl = Astro.url.pathname, 
+  variant = 'default',
+} = Astro.props;
+
+const isRich = variant === 'rich';
+
+import { BASE_NAV_ITEMS } from '@/data/site';
+import DetailButton from '@/components/common/DetailButton.astro';
+---
+
+<section id="blog-list" class="section-margin-y py-32 relative overflow-hidden">
+  {/* 背景に淡い光のグラデーションを配置して神秘性を演出 */}
+  <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full opacity-25 pointer-events-none"></div>
+
+  <SectionContainer>
+    {/* セクションタイトル */}
+    <div 
+      class:list={[
+        "relative mb-20 transition-all duration-2001 ease-out",
+        isRich ? "demo03-fade-target transform translate-y-20 opacity-0" : ""
+      ]}
+      style={isRich ? `will-change: transform; transition-delay: 0.1s;` : undefined}
+    >
+      <Image 
+        src={lineBright} 
+        alt="サブタイトル背景" 
+        width={713} 
+        height={245}
+        class="absolute inset-0 top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 z-[-1] w-[100vw] pointer-events-none backface-hidden"
+        style="will-change: transform; transform: translateZ(0);"
+        aria-hidden="true"
+      />  
+      <h2 class="txt-luster [text-shadow:_0_0_30px_white] text-3xl text-center md:text-6xl font-serif text-clr-main-1 sm:tracking-widest mb-6">
+        {title}
+      </h2>
+    </div>    
+
+    {/* セクション説明文 */}
+    <div 
+      class:list={[
+        "relative mb-20 transition-all duration-2001 ease-out",
+        isRich ? "demo03-fade-target transform translate-y-20 opacity-0" : ""
+      ]}
+      style={isRich ? `will-change: transform; transition-delay: 0.1s;` : undefined}
+    >
+      <p class="text-clr-bl-1 text-lg max-w-lg mx-auto text-center leading-relaxed bg-white/50 backdrop-blur-md border border-white/10 p-6 md:p-8 rounded-3xl shadow-2xl">
+        {description}
+      </p>
+    </div>
+
+    {/* 記事カード一覧グリッド */}
+    <div class="grid lg:grid-cols-3 gap-10 lg:gap-16">
+      {posts.length === 0 ? (
+        <p class="col-span-3 text-center text-clr-bl-1">まだ記事がありません。</p>
+      ) : (
+        posts.map((post, index) => {
+          const postSlug = post.slug || post.id;
+          const formattedDate = post.pubDate 
+            ? new Date(post.pubDate).toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' })
+            : '';
+
+          return (
+            <div class="relative h-full">
+              {/* カード本体 */}
+              <article 
+                class:list={[
+                  "relative group bg-gradient-to-b from-clr-wh-1/99 to-clr-wh-1/60 border border-clr-wh-1/10 p-8 hover:border-clr-main-1/50 rounded-2xl h-full flex flex-col transition-all duration-1200 ease-out shadow-xl",
+                  isRich ? "demo03-fade-target transform translate-y-20 opacity-0" : ""
+                ]}
+                style={isRich ? `transition-delay: ${index * 0.2}s;` : undefined}
+              >
+                {/* カード上部の光の演出 */}
+                <div class="absolute inset-0 bg-gradient-to-b from-clr-main-1/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none rounded-2xl"></div>
+
+                <div class="relative z-10 flex flex-col h-full">
+                  {/* メタ情報（日付・カテゴリ） */}
+                  <div class="flex items-center justify-between gap-2 mb-4 text-xs">
+                    {formattedDate && (
+                      <time datetime={post.pubDate} class="text-clr-bl-1/70 tracking-wider">
+                        {formattedDate}
+                      </time>
+                    )}
+                    {post.category && (
+                      <span class="px-2.5 py-1 bg-clr-main-1/10 text-clr-main-1 rounded-md font-bold tracking-wide">
+                        {post.category.name}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* 記事タイトル */}
+                  <h3 class="text-xl font-serif text-clr-main-1 mb-4 leading-relaxed group-hover:text-clr-main-1 transition-colors">
+                    <a href={resolveUrl(`/blog/${postSlug}/`, currentUrl)} class="focus:outline-none">
+                      <span class="absolute inset-0 z-20"></span>
+                      {post.title}
+                    </a>
+                  </h3>
+
+                  {/* 抜粋などがあればここに表示（今回はシンプルにカード枠を美しく保つ構成） */}
+                  <div class="mt-auto pt-6 border-t border-clr-main-1/30 flex items-center justify-end text-sm text-clr-main-1 font-bold">
+                    <span>記事を読む →</span>
+                  </div>
+                </div>
+              </article>
+            </div>
+          );
+        })
+      )}
+    </div>
+
+    {/* ブログ一覧ページへの誘導ボタン */}
+      <DetailButton href={detailUrl} text={BASE_NAV_ITEMS[5].text} />
+
+
+  </SectionContainer>
+</section>
