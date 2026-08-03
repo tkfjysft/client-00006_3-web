@@ -32,7 +32,7 @@
 		try {
 		const response = await getBlogs({
 			limit: 6,
-			fields: ['id', 'title', 'pubDate', 'slug', 'category'],
+			fields: ['id', 'title', 'pubDate', 'slug', 'category', 'eyecatch'],
 		});
 		posts = response.contents || [];
 		} catch (error) {

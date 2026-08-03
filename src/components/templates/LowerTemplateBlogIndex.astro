@@ -3,28 +3,25 @@ import Layout from '@/layouts/Layout.astro';
 import SectionContainer from '@/components/common/SectionContainer.astro';
 import HeroSection from '@/components/common_lower_layer/HeroSection.astro';
 
-// import heroData from '@/components/profile/heroSection.json';
-
 import { getBlogs } from "@/lib/microcms.ts";
 import { resolveUrl } from '@/utils/pathHelper';
 
 const currentUrl = Astro.url.pathname;
 
-const response = await getBlogs({ fields: ["id", "title", "pubDate", "slug", "category"] });
+// ★ fields に 'eyecatch' を追加
+const response = await getBlogs({ fields: ["id", "title", "pubDate", "slug", "category", "eyecatch"] });
 const posts = response.contents;
 
-	interface Props {
-	variant?: 'default' | 'rich'; // ← 追加：リッチ版の切り替え用プロパティ
-	}
+interface Props {
+  variant?: 'default' | 'rich';
+}
 
-	const { variant = 'default' } = Astro.props; // デフォルトは単一ページなど
-
-
-	const isRich = variant === 'rich';
+const { variant = 'default' } = Astro.props;
+const isRich = variant === 'rich';
 ---
 
 <Layout title="ブログ記事一覧" variant={variant}>
-	<HeroSection title="ブログ" subtitle="記事一覧" variant={variant} />
+    <HeroSection title="ブログ" subtitle="記事一覧" variant={variant} />
   <section class="py-20 bg-gradient-to-b from-clr-base-1/30 via-clr-bl-1/30 to-clr-base-1/30 text-clr-wh-1 min-h-screen">
     <SectionContainer>
       <div class="max-w-4xl mx-auto px-6">
@@ -33,65 +30,77 @@ const posts = response.contents;
         <ul class="space-y-10">
 {
   posts.map((post) => {
-    // slugがあればslugを優先、なければ従来のidを使う
     const postSlug = post.slug || post.id;
+    const eyecatchUrl = post.eyecatch?.url;
 
     return (
-		<li
-		class:list={[
-        "relative transition-all duration-2001 ease-out",
-        isRich ? "demo03-fade-target transform translate-y-20 opacity-0" : ""
-		]}
-		style={isRich ? `will-change: transform; transition-delay: 0.1s;` : undefined}
-		>
+        <li
+          class:list={[
+            "relative transition-all duration-2001 ease-out",
+            isRich ? "demo03-fade-target transform translate-y-20 opacity-0" : ""
+          ]}
+          style={isRich ? `will-change: transform; transition-delay: 0.1s;` : undefined}
+        >
+          <article class="relative flex flex-col md:flex-row items-stretch gap-6 md:gap-8 rounded-2xl p-6 md:p-8 bg-gradient-to-b from-clr-wh-1/85 via-clr-wh-1/70 to-clr-wh-1/20 border border-clr-main-1/40 hover:border-clr-accent/60 transition-all duration-300 shadow-lg group overflow-hidden">
 
-				  
-                  <article class="flex flex-col md:flex-row md:items-center md:justify-between gap-8 rounded-2xl p-6 md:p-8 bg-gradient-to-b from-clr-wh-1/85 via-clr-wh-1/70 to-clr-wh-1/20 border border-clr-main-1/40 hover:border-clr-accent/60 transition-all duration-300 shadow-lg group">
+            {/* --- サムネイル画像エリア --- */}
+            {eyecatchUrl && (
+              <div class="w-full md:w-56 shrink-0 aspect-video md:aspect-[4/3] rounded-xl overflow-hidden bg-clr-main-1/5">
+                <img 
+                  src={eyecatchUrl} 
+                  alt={post.title}
+                  loading="lazy"
+                  class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+              </div>
+            )}
 
-				  <div>
-					{/* --- ここからカテゴリバッジを追加 --- */}
-      {post.category && (
-        <div class="mb-2">
-          <a 
-            href={resolveUrl(`/blog/category/${post.category.slug}/`, currentUrl)}
-            class=" px-2.5 py-0.5 bg-clr-main-1/10 text-clr-main-1 text-xs rounded-md font-bold hover:bg-clr-main-1/20 transition-colors"
-          >
-            {post.category.name}
-          </a>
-        </div>
-      )}
-      {/* --- ここまで --- */}
+            {/* --- テキストコンテンツエリア --- */}
+            <div class="flex flex-col flex-grow justify-between">
+              <div>
+                {/* カテゴリバッジ */}
+                {post.category && (
+                  <div class="mb-3">
+                    <a 
+                      href={resolveUrl(`/blog/category/${post.category.slug}/`, currentUrl)}
+                      class="relative z-20 px-2.5 py-0.5 bg-clr-main-1/10 text-clr-main-1 text-xs rounded-md font-bold hover:bg-clr-main-1/20 transition-colors"
+                    >
+                      {post.category.name}
+                    </a>
+                  </div>
+                )}
 
-	  
+                {/* 日付 */}
+                <div class="flex items-center gap-2 text-xs font-bold text-clr-main-1/70 mb-2">
+                  <time datetime={post.pubDate}>
+                    {post.pubDate ? new Date(post.pubDate).toLocaleDateString('ja-JP', {
+                      year: 'numeric',
+                      month: '2-digit',
+                      day: '2-digit'
+                    }) : ''}
+                  </time>
+                </div>
 
-					<div class="txt-luster flex items-center gap-2 text-base font-bold text-clr-main-1 shrink-0">
-                      <time datetime={post.pubDate}>
-                        {new Date(post.pubDate).toLocaleDateString('ja-JP', {
-                          year: 'numeric',
-                          month: '2-digit',
-                          day: '2-digit'
-                        })}
-                      </time>
-                    </div>
-				  </div>
+                {/* 記事タイトル ＆ 全体リンク */}
+                <h2 class="txt-luster text-lg md:text-xl font-serif font-bold text-clr-bl-1 group-hover:text-clr-main-1 transition-colors duration-200">
+                  <a href={resolveUrl(`/blog/${postSlug}/`, currentUrl)} class="focus:outline-none">
+                    <span class="absolute inset-0 z-10"></span>
+                    {post.title}
+                  </a>
+                </h2>
+              </div>
 
-	  			<a href={resolveUrl(`/blog/${postSlug}/`, currentUrl)} >
+              {/* 矢印アイコン */}
+              <div class="flex justify-end items-center gap-2 text-xl font-bold text-clr-main-1 mt-4 md:mt-0">
+                <span class="txt-luster transform group-hover:translate-x-1 transition-transform duration-200">記事を読む →</span>
+              </div>
+            </div>
 
-                    <div class="space-y-2">
-                      <h2 class="txt-luster text-lg md:text-xl font-serif font-bold text-clr-bl-1 group-hover:text-clr-main-1/70 transition-colors duration-200">
-                        {post.title}
-                      </h2>
-                    </div>
-                    									</a>
-
-                    <div class="flex justify-end items-center gap-2 text-2xl font-bold text-clr-main-1 shrink-0">
-                      <span class="txt-luster transform group-hover:translate-x-1 transition-transform duration-200">→</span>
-                    </div>
-                  </article>
-			</li>
-				);
-			})
-			}   
+          </article>
+        </li>
+                );
+            })
+            }   
      </ul>
 
       </div>

@@ -18,6 +18,13 @@ export type Category = {
   slug: string;
 };
 
+// 【追加】microCMSの画像型定義
+export type MicroCMSImage = {
+  url: string;
+  height?: number;
+  width?: number;
+};
+
 // ブログの型定義
 export type Blog = {
   id: string;
@@ -28,7 +35,7 @@ export type Blog = {
   title: string;
   content: string;
   pubDate?: string; 
-  eyecatch?: string;
+  eyecatch?: MicroCMSImage;
   slug?: string; // すでに使っているslugも追加しておくと安心です
   category?: Category; // 追加：カテゴリ情報
 };

@@ -23,6 +23,14 @@ const {
   variant = 'default',
 } = Astro.props;
 
+// 【デバッグ用】ここで中身を表示してみる
+console.log('Postsデータ:', posts);
+
+if (posts.length > 0) {
+  console.log('1件目のデータ構造:', posts[0]);
+  console.log('1件目のeyecatch:', posts[0].eyecatch);
+}
+
 const isRich = variant === 'rich';
 
 import { BASE_NAV_ITEMS } from '@/data/site';
@@ -79,46 +87,62 @@ import DetailButton from '@/components/common/DetailButton.astro';
           const formattedDate = post.pubDate 
             ? new Date(post.pubDate).toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' })
             : '';
+          const thumbnailUrl = post.eyecatch?.url;
 
           return (
             <div class="relative h-full">
               {/* カード本体 */}
               <article 
                 class:list={[
-                  "relative group bg-gradient-to-b from-clr-wh-1/99 to-clr-wh-1/60 border border-clr-wh-1/10 p-8 hover:border-clr-main-1/50 rounded-2xl h-full flex flex-col transition-all duration-1200 ease-out shadow-xl",
+                  "relative group bg-gradient-to-b from-clr-wh-1/99 to-clr-wh-1/60 border border-clr-wh-1/10 hover:border-clr-main-1/50 rounded-2xl h-full flex flex-col transition-all duration-1200 ease-out shadow-xl overflow-hidden",
                   isRich ? "demo03-fade-target transform translate-y-20 opacity-0" : ""
                 ]}
                 style={isRich ? `transition-delay: ${index * 0.2}s;` : undefined}
               >
                 {/* カード上部の光の演出 */}
-                <div class="absolute inset-0 bg-gradient-to-b from-clr-main-1/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none rounded-2xl"></div>
+                <div class="absolute inset-0 bg-gradient-to-b from-clr-main-1/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none rounded-2xl z-10"></div>
 
-                <div class="relative z-10 flex flex-col h-full">
-                  {/* メタ情報（日付・カテゴリ） */}
-                  <div class="flex items-center justify-between gap-2 mb-4 text-xs">
-                    {formattedDate && (
-                      <time datetime={post.pubDate} class="text-clr-bl-1/70 tracking-wider">
-                        {formattedDate}
-                      </time>
-                    )}
-                    {post.category && (
-                      <span class="px-2.5 py-1 bg-clr-main-1/10 text-clr-main-1 rounded-md font-bold tracking-wide">
-                        {post.category.name}
-                      </span>
-                    )}
-                  </div>
+                <div class="relative z-20 flex flex-col h-full">
+                  {/* サムネイル画像エリア */}
+                  {thumbnailUrl && (
+                    <div class="aspect-video w-full overflow-hidden bg-clr-main-1/5">
+                      <img 
+                        src={thumbnailUrl} 
+                        alt={post.title}
+                        loading="lazy"
+                        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                    </div>
+                  )}
 
-                  {/* 記事タイトル */}
-                  <h3 class="text-xl font-serif text-clr-main-1 mb-4 leading-relaxed group-hover:text-clr-main-1 transition-colors">
-                    <a href={resolveUrl(`/blog/${postSlug}/`, currentUrl)} class="focus:outline-none">
-                      <span class="absolute inset-0 z-20"></span>
-                      {post.title}
-                    </a>
-                  </h3>
+                  {/* カード内部のコンテンツエリア */}
+                  <div class="p-8 flex flex-col flex-grow">
+                    {/* メタ情報（日付・カテゴリ） */}
+                    <div class="flex items-center justify-between gap-2 mb-4 text-xs">
+                      {formattedDate && (
+                        <time datetime={post.pubDate} class="text-clr-bl-1/70 tracking-wider">
+                          {formattedDate}
+                        </time>
+                      )}
+                      {post.category && (
+                        <span class="px-2.5 py-1 bg-clr-main-1/10 text-clr-main-1 rounded-md font-bold tracking-wide">
+                          {post.category.name}
+                        </span>
+                      )}
+                    </div>
 
-                  {/* 抜粋などがあればここに表示（今回はシンプルにカード枠を美しく保つ構成） */}
-                  <div class="mt-auto pt-6 border-t border-clr-main-1/30 flex items-center justify-end text-sm text-clr-main-1 font-bold">
-                    <span>記事を読む →</span>
+                    {/* 記事タイトル */}
+                    <h3 class="text-xl font-serif text-clr-main-1 mb-4 leading-relaxed group-hover:text-clr-main-1 transition-colors">
+                      <a href={resolveUrl(`/blog/${postSlug}/`, currentUrl)} class="focus:outline-none">
+                        <span class="absolute inset-0 z-30"></span>
+                        {post.title}
+                      </a>
+                    </h3>
+
+                    {/* 記事を読むボタン部分 */}
+                    <div class="mt-auto pt-6 border-t border-clr-main-1/30 flex items-center justify-end text-sm text-clr-main-1 font-bold">
+                      <span class="group-hover:translate-x-1 transition-transform duration-300">記事を読む →</span>
+                    </div>
                   </div>
                 </div>
               </article>
@@ -129,8 +153,7 @@ import DetailButton from '@/components/common/DetailButton.astro';
     </div>
 
     {/* ブログ一覧ページへの誘導ボタン */}
-      <DetailButton href={detailUrl} text={BASE_NAV_ITEMS[5].text} />
-
+    <DetailButton href={detailUrl} text={BASE_NAV_ITEMS[5].text} />
 
   </SectionContainer>
 </section>

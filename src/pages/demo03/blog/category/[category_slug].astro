@@ -17,7 +17,7 @@ const { category } = Astro.props;
 
 const response = await getBlogs({
   filters: `category[equals]${category.id}`,
-  fields: ["id", "title", "pubDate", "slug", "category"],
+  fields: ["id", "title", "pubDate", "slug", "category", "eyecatch"],
 });
 const posts = response.contents;
 ---
