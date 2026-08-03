@@ -1,0 +1,60 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import { SITE_INFO } from '@/data/site.ts';
+import HeroSection from '@/components/common_lower_layer/HeroSection.astro';
+
+interface Props {
+  variant?: 'default' | 'rich';
+}
+const { 
+  variant = 'default' 
+} = Astro.props;
+const isRich = variant === 'rich';
+
+const title = "プライバシーポリシー";
+---
+
+<Layout title={title} variant={variant}>
+<HeroSection title={title} subtitle="" variant={variant} />
+  <div class="wrap">
+  <main class="max-w-4xl mx-auto px-6 pt-10 pb-60">
+    <div class="bg-white/50 backdrop-blur-md border border-white/10 p-6 mb-16 md:p-8 rounded-3xl shadow-2xl">
+    
+    <div class="space-y-8 text-gray-700 leading-relaxed">
+      <section>
+        <h2 class="text-xl font-bold mb-4 text-gray-900">個人情報の取り扱いについて</h2>
+        <p>
+          {SITE_INFO.title}（以下「当サイト」といいます）では、お客様の個人情報の保護を極めて重要視しております。
+          ご提供いただいた個人情報は、以下の目的以外には使用いたしません。
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-bold mb-4 text-gray-900">個人情報の利用目的</h2>
+        <ul class="list-disc pl-5 space-y-2">
+          <li>セッションのご予約・お問い合わせへの回答</li>
+          <li>サービスの提供および改善</li>
+          <li>重要なお知らせの連絡</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-bold mb-4 text-gray-900">第三者への提供</h2>
+        <p>
+          当サイトは、法令に基づく場合を除き、お客様の同意を得ることなく個人情報を第三者に提供することはありません。
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-bold mb-4 text-gray-900">お問い合わせ窓口</h2>
+        <p>
+          当サイトの個人情報の取り扱いに関するお問い合わせは、以下の窓口までご連絡ください。<br />
+          販売業者: {SITE_INFO.title}<br />
+          責任者: {SITE_INFO.ownerFullname}
+        </p>
+      </section>
+    </div>
+    </div>
+  </main>
+  </div>
+</Layout>

@@ -3,28 +3,60 @@ import menuData from './menuSection.json';
 import SectionContainer from '@/components/common/SectionContainer.astro';
 import { Image } from 'astro:assets';
 import leftTopFrame from '@/assets/images/radiance.avif';
+
+interface Props {
+  variant?: 'default' | 'rich';
+}
+const { 
+  variant = 'default' 
+} = Astro.props;
+const isRich = variant === 'rich';
 ---
 
 <section class="py-20 bg-clr-wh-1/70">
   <SectionContainer>
   <div class="max-w-5xl mx-auto px-6">
-    <h2 class="txt-luster text-3xl md:text-4xl font-bold text-center mb-6">{menuData.heading}</h2>
-    <p class="txt-luster text-center text-clr-bl-1 mb-16 max-w-2xl mx-auto">{menuData.description}</p>
+    <h2
+		class:list={[
+        "txt-luster text-3xl md:text-4xl font-bold text-center mb-6 transition-all duration-2001 ease-out",
+        isRich ? "demo03-fade-target transform translate-y-20 opacity-0" : ""
+		]}
+		style={isRich ? `will-change: transform; transition-delay: 0.1s;` : undefined}
+	>
+	{menuData.heading}
+	</h2>
+    <p
+		class:list={[
+        "txt-luster text-center text-clr-bl-1 mb-16 max-w-2xl mx-auto transition-all duration-2001 ease-out",
+        isRich ? "demo03-fade-target transform translate-y-20 opacity-0" : ""
+		]}
+		style={isRich ? `will-change: transform; transition-delay: 0.1s;` : undefined}
+
+	>{menuData.description}</p>
 
     <div class="grid md:grid-cols-1 gap-8">
-      {menuData.items.map((item) => (
-        <article class="relative border-l-6 border-clr-main-1/90 rounded-2xl p-8 hover:shadow-lg transition-shadow bg-clr-wh-1/90 flex flex-col">
-
+      {menuData.items.map((item, index) => (
+		<div class="relative">
 			<Image 
 				src={leftTopFrame} 
 				alt="あしらい" 
 				width={200} 
 				height={168}
-				class="absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 mix-blend-screen pointer-events-none backface-hidden"
-				style="will-change: transform; transform: translateZ(0);"
-				aria-hidden="true"
+              class:list={[
+                "absolute left-0 -translate-x-1/2 -translate-y-1/2 mix-blend-screen pointer-events-none backface-hidden transition-all duration-2000 ease-out",
+                isRich ? "demo03-fade-target transform translate-y-20 opacity-0 -top-20" : " top-0"
+              ]}
+              style={isRich ? `will-change: transform; transform: translateZ(0); transition-delay: ${(index * 0.2) + 0.7}s;` : `will-change: transform; transform: translateZ(0);`}
+              aria-hidden="true"
 			/>  
 
+        <article
+		      class:list={[
+              "relative border-l-6 border-clr-main-1/90 rounded-2xl p-8 hover:shadow-lg bg-clr-wh-1/90 flex flex-col transition-all duration-1200 ease-out",
+              isRich ? "demo03-fade-target transform translate-y-20 opacity-0" : ""
+            ]}
+            style={isRich ? `transition-delay: ${index * 0.2}s;` : undefined}
+		>
 
           <h3 class="text-xl font-bold mb-2">{item.name}</h3>
           <div class="flex justify-between items-center mb-4 text-sm text-clr-bl-1">
@@ -32,24 +64,25 @@ import leftTopFrame from '@/assets/images/radiance.avif';
             <span class="font-bold text-lg text-clr-main-1">{item.price}</span>
           </div>
 
-<!-- 親要素：デフォルトで縦積み、md(768px)以上で横並び -->
-<div class="flex flex-col md:flex-row gap-8">
-  
-  <!-- 説明文エリア：横幅の6割（必要に応じて調整してください） -->
-  <p class="text-clr-bl-1 md:w-3/5">
-    {item.description}
-  </p>
-  
-  <!-- リストエリア：横幅の4割、上のborderは横並び時のみ左borderにする -->
-  <ul class="space-y-2 border-t border-clr-bl-1/50 md:border-t-0 md:border-l pt-4 md:pt-0 md:pl-6">
-    {item.features.map((feature) => (
-      <li class="text-sm text-clr-main-1 flex items-center">
-        <span class="mr-2">✨</span> {feature}
-      </li>
-    ))}
-  </ul>
-</div>
+			<!-- 親要素：デフォルトで縦積み、md(768px)以上で横並び -->
+			<div class="flex flex-col md:flex-row gap-8">
+			
+			<!-- 説明文エリア：横幅の6割（必要に応じて調整してください） -->
+			<p class="text-clr-bl-1 md:w-3/5">
+				{item.description}
+			</p>
+			
+			<!-- リストエリア：横幅の4割、上のborderは横並び時のみ左borderにする -->
+			<ul class="space-y-2 border-t border-clr-bl-1/50 md:border-t-0 md:border-l pt-4 md:pt-0 md:pl-6">
+				{item.features.map((feature) => (
+				<li class="text-sm text-clr-main-1 flex items-center">
+					<span class="mr-2">✨</span> {feature}
+				</li>
+				))}
+			</ul>
+			</div>
         </article>
+		</div>
       ))}
     </div>
   </div>

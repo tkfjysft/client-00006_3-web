@@ -33,7 +33,7 @@ import DetailButton from '@/components/common/DetailButton.astro';
   <SectionContainer>
 	<div 
       class:list={[
-        "relative mb-20 transition-all duration-2500 ease-out",
+        "relative mb-20 transition-all duration-2001 ease-out",
         isRich ? "demo03-fade-target transform translate-y-20 opacity-0" : ""
       ]}
       style={isRich ? `will-change: transform; transition-delay: 0.1s;` : undefined}
@@ -56,7 +56,13 @@ import DetailButton from '@/components/common/DetailButton.astro';
 	<!-- <p class="text-clr-bl-1 text-lg max-w-lg mx-auto leading-relaxed bg-white/50 backdrop-blur-md border border-white/10 p-6 mb-16 md:p-8 rounded-3xl shadow-2xl">{description}</p> -->
 
     {/* PC時はグリッドで等間隔に配置し、線を中央に通す */}
-    <div class="grid md:grid-cols-4 gap-8 relative mx-auto leading-relaxed bg-white/50 backdrop-blur-md border border-white/10 p-6 mb-16 md:p-8 rounded-3xl shadow-2xl">
+    <div 
+      class:list={[
+        "grid md:grid-cols-4 gap-8 relative mx-auto leading-relaxed bg-white/50 backdrop-blur-md border border-white/10 p-6 mb-16 md:p-8 rounded-3xl shadow-2xl transition-all duration-2001 ease-out",
+        isRich ? "demo03-fade-target transform translate-y-20 opacity-0" : ""
+      ]}
+      style={isRich ? `will-change: transform; transition-delay: 0.1s;` : undefined}
+	>
       {/* 連結線：PC時のみ、grid全体の中央を通す */}
       <div class="hidden md:block absolute top-16 left-[12.5%] right-[12.5%] h-px border-t border-dashed border-clr-main-1/30"></div>
 

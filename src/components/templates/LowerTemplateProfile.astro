@@ -1,0 +1,19 @@
+---
+// src/pages/multi/service.astro
+import HeroSection from '@/components/common_lower_layer/HeroSection.astro';
+import ProfileSection from '@/components/profile/ProfileSection.astro';
+import Layout from '@/layouts/Layout.astro';
+import heroData from '@/components/profile/heroSection.json';
+
+interface Props {
+  variant?: 'default' | 'rich';
+}
+const { 
+  variant = 'default' 
+} = Astro.props;
+const isRich = variant === 'rich';
+---
+<Layout title={heroData.title} variant={variant}>
+  <HeroSection title={heroData.title} subtitle={heroData.subtitle} variant={variant} />
+  <ProfileSection variant={variant} />
+</Layout>

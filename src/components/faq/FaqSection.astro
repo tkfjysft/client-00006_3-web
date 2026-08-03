@@ -4,13 +4,27 @@ import SectionContainer from '@/components/common/SectionContainer.astro';
 
 const titleParts = faqData.title.split('：');
 const hasColon = titleParts.length > 1;
+
+interface Props {
+  variant?: 'default' | 'rich';
+}
+const { 
+  variant = 'default' 
+} = Astro.props;
+const isRich = variant === 'rich';
 ---
 
 <section class="py-20 bg-clr-wh-1/70">
   <SectionContainer>
     <div class="max-w-4xl mx-auto px-6">
       <!-- 見出しセクション -->
-      <h2 class="text-3xl md:text-4xl font-bold text-center mb-6 text-clr-base-1 leading-relaxed">
+      <h2
+	  	class:list={[
+        "text-3xl md:text-4xl font-bold text-center mb-6 text-clr-base-1 leading-relaxed transition-all duration-2001 ease-out",
+        isRich ? "demo03-fade-target transform translate-y-20 opacity-0" : ""
+		]}
+		style={isRich ? `will-change: transform; transition-delay: 0.1s;` : undefined}
+		>
         {hasColon ? (
           <>
             <span class="block text-xl md:text-3xl font-normal mb-2 text-clr-main-1">{titleParts[0]}：</span>
@@ -20,12 +34,24 @@ const hasColon = titleParts.length > 1;
           faqData.title
         )}
       </h2>
-      <p class="txt-luster text-left text-clr-bl-1 mb-16 max-w-2xl mx-auto text-base leading-relaxed">{faqData.description}</p>
+      <p
+	  	class:list={[
+        "txt-luster text-left text-clr-bl-1 mb-16 max-w-2xl mx-auto text-base leading-relaxed transition-all duration-2001 ease-out",
+        isRich ? "demo03-fade-target transform translate-y-20 opacity-0" : ""
+		]}
+		style={isRich ? `will-change: transform; transition-delay: 0.1s;` : undefined}
+		>{faqData.description}</p>
 
       <!-- FAQリスト（すっきりしたアコーディオン形式） -->
       <div class="flex flex-col gap-8">
         {faqData.questions.map((item, index) => (
-          <details class="group relative rounded-2xl bg-clr-wh-1/90 border border-clr-main-2/40 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
+          <details
+		      class:list={[
+              "group relative rounded-2xl bg-clr-wh-1/90 border border-clr-main-2/40 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden transition-all duration-1200 ease-out",
+              isRich ? "demo03-fade-target transform translate-y-20 opacity-0" : ""
+            ]}
+            style={isRich ? `transition-delay: ${index * 0.05}s;` : undefined}
+		  >
             
             <!-- 開閉ボタン部分 -->
             <summary class="flex items-center justify-between p-6 cursor-pointer list-none select-none">

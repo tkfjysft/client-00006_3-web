@@ -9,7 +9,7 @@ const currentUrl = Astro.url.pathname;
 
 // ① ビルド時に「どの記事ページを作るべきか」をAstroに教える関数
 export async function getStaticPaths() {
-  const response = await getBlogs({ fields: ["id", "slug", "category"] });
+  const response = await getBlogs({ fields: ["id", "slug"] });
   
   return response.contents.map((post) => ({
     params: { blog_id: post.slug || post.id },
@@ -73,7 +73,7 @@ const safeContent = post.content
 {post.category && (
           <div class="mb-4">
             <a 
-              href={`/multi/blog/category/${post.category.slug}/`}
+              href={resolveUrl(`/blog/category/${post.category.slug}/`, currentUrl)}
               class="inline-block px-3 py-1 bg-clr-main-1/10 text-clr-main-1 text-sm rounded-md font-bold hover:bg-clr-main-1/20 transition-colors"
             >
               {post.category.name}

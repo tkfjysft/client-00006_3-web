@@ -39,7 +39,7 @@ import DetailButton from '@/components/common/DetailButton.astro';
   <SectionContainer>
 	<div 
       class:list={[
-        "relative mb-20 transition-all duration-2500 ease-out",
+        "relative mb-20 transition-all duration-2001 ease-out",
         isRich ? "demo03-fade-target transform translate-y-20 opacity-0" : ""
       ]}
       style={isRich ? `will-change: transform; transition-delay: 0.1s;` : undefined}
@@ -58,10 +58,17 @@ import DetailButton from '@/components/common/DetailButton.astro';
       </h2>
     </div>    
 
-	
+		<div 
+      class:list={[
+        "relative mb-20 transition-all duration-2001 ease-out",
+        isRich ? "demo03-fade-target transform translate-y-20 opacity-0" : ""
+      ]}
+      style={isRich ? `will-change: transform; transition-delay: 0.1s;` : undefined}
+    >
     <p class="text-clr-bl-1 text-lg max-w-lg mx-auto leading-relaxed bg-white/50 backdrop-blur-md border border-white/10 p-6 mb-16 md:p-8 rounded-3xl shadow-2xl">
       {description}
     </p>
+		</div>
 
 
     <div class="grid lg:grid-cols-3 gap-10 lg:gap-16">

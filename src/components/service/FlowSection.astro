@@ -1,22 +1,49 @@
 ---
 import flowData from './flowSection.json';
 import SectionContainer from '@/components/common/SectionContainer.astro';
-import { Image } from 'astro:assets';
-import leftTopFrame from '@/assets/images/radiance.avif';
+
+interface Props {
+  variant?: 'default' | 'rich';
+}
+const { 
+  variant = 'default' 
+} = Astro.props;
+const isRich = variant === 'rich';
 ---
 
 <section class="py-20 bg-clr-wh-1/70 bg-clr-wh-1/78">
   <SectionContainer>
     <div class="max-w-5xl mx-auto px-6">
       <!-- 見出しセクション -->
-      <h2 class="text-3xl md:text-4xl font-bold text-center mb-6 text-clr-base-1">{flowData.sectionTitle}</h2>
-      <p class="text-center text-clr-bl-1 mb-16 max-w-2xl mx-auto text-base leading-relaxed">{flowData.sectionSubTitle}</p>
+      <h2
+	 	class:list={[
+        "text-3xl md:text-4xl font-bold text-center mb-6 text-clr-base-1 transition-all duration-2001 ease-out",
+        isRich ? "demo03-fade-target transform translate-y-20 opacity-0" : ""
+		]}
+		style={isRich ? `will-change: transform; transition-delay: 0.1s;` : undefined}
+ 
+	  >{flowData.sectionTitle}</h2>
+      <p
+	  	class:list={[
+        "text-center text-clr-bl-1 mb-16 max-w-2xl mx-auto text-base leading-relaxed transition-all duration-2001 ease-out",
+        isRich ? "demo03-fade-target transform translate-y-20 opacity-0" : ""
+		]}
+		style={isRich ? `will-change: transform; transition-delay: 0.1s;` : undefined}
+
+	  >{flowData.sectionSubTitle}</p>
 
       <!-- ステップ一覧 -->
       <div class="flex flex-col gap-8">
         {flowData.steps.map((stepItem, index) => (
           <>
-            <article class="relative border-1 border-clr-main-1/30 rounded-2xl p-8 shadow-md hover:shadow-lg transition-shadow bg-clr-wh-1/90 flex flex-col">
+            <article class="relative border-1 border-clr-main-1/30 rounded-2xl p-8 shadow-md hover:shadow-lg bg-clr-wh-1/90 flex flex-col"
+						class:list={[
+              "p-6 border border-clr-bl-1/10 rounded-2xl hover:border-clr-main-2 transition-all duration-1200 ease-out",
+              isRich ? "demo03-fade-target transform translate-y-20 opacity-0" : ""
+            ]}
+            style={isRich ? `transition-delay: ${index * 0.2}s;` : undefined}
+
+			>
 
               <!-- ステップ番号 ＆ タイトル -->
               <div class="flex items-center gap-4 mb-4">
